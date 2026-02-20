@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Networking | ThreatLens</title>
+    <link rel="stylesheet" href="../src/css/styles.css">
+    <link rel="stylesheet" href="../src/css/post-styles.css">
+    <link rel="shortcut icon" href="../src/logos/logo.svg" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <div class="nav-brand">
+                <img src="../src/logos/logo.svg" alt="ThreatLens Logo" style="width: 35px; height: 35px;">
+                <span>ThreatLens</span>
+            </div>
+            <button class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="./index.html" class="nav-link">Home</a></li>
+                <li><a href="./index.html#learning-paths" class="nav-link active">Learning Paths</a></li>
+                <li><a href="./all-posts.html" class="nav-link">All Posts</a></li>
+                <li><a href="./index.html#resources" class="nav-link">Resources</a></li>
+                <li><a href="./index.html#about" class="nav-link">About</a></li>
+            </ul>
+            <div class="nav-search">
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Category Header -->
+    <section class="category-header" style="padding-top: 100px; padding-bottom: 60px; background: var(--secondary-bg);">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="./index.html"><i class="fas fa-home"></i> Home</a>
+                <span>/</span>
+                <span>Networking</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 2rem; margin-top: 2rem;">
+                <div style="width: 80px; height: 80px; background: rgba(27, 160, 215, 0.2); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: var(--networking-color);">
+                    <i class="fas fa-network-wired"></i>
+                </div>
+                <div>
+                    <h1 style="font-size: 2.5rem; color: var(--text-heading); margin-bottom: 0.5rem;">Networking</h1>
+                    <p style="color: var(--text-secondary); font-size: 1.1rem;">Cisco networking essentials: routing, switching, IP addressing, VLANs, and network troubleshooting</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Posts List -->
+    <section class="posts-section" style="padding: 60px 0; background: var(--primary-bg);">
+        <div class="container">
+            <!-- Introduction -->
+            <div style="background: var(--card-bg); padding: 2rem; border-radius: 12px; margin-bottom: 3rem; border-left: 4px solid var(--networking-color);">
+                <h3 style="color: var(--text-heading); margin-bottom: 1rem;">About This Section</h3>
+                <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 0.75rem;">This section documents my practical learning and labs from networking concepts.</p>
+                <p style="color: var(--text-secondary); line-height: 1.8; margin-bottom: 0.75rem;">The focus here is to understand how networks actually work at packet level using:</p>
+                <ul style="color: var(--text-secondary); line-height: 1.8; margin-left: 1.5rem; margin-bottom: 0.75rem;">
+                    <li>Packet Tracer labs</li>
+                    <li>Diagrams</li>
+                    <li>Real troubleshooting scenarios</li>
+                </ul>
+                <p style="color: var(--text-secondary); line-height: 1.8; margin: 0;"><strong style="color: var(--text-primary);">Each post is written from hands-on practice and lab experimentation.</strong></p>
+            </div>
+
+            <div class="posts-timeline">
+                <article class="post-card">
+                    <div class="post-category networking">Networking</div>
+                    <div class="post-content">
+                        <div class="post-date">
+                            <i class="fas fa-calendar"></i> February 5, 2026
+                        </div>
+                        <h3 class="post-title">OSI vs TCP/IP — Understanding with a Real Packet Flow</h3>
+                        <p class="post-excerpt">Following a real packet flow from browser to server, understanding how OSI and TCP/IP models work in practice with DNS, TCP handshake, routing, and encapsulation...</p>
+                        <div class="post-tags">
+                            <span class="tag">OSI Model</span>
+                            <span class="tag">TCP/IP</span>
+                            <span class="tag">Packet Flow</span>
+                            <span class="tag">Packet Tracer</span>
+                        </div>
+                        <a href="./networking/osi-vs-tcpip.html" class="post-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+
+                <article class="post-card">
+                    <div class="post-category networking">Networking</div>
+                    <div class="post-content">
+                        <div class="post-date">
+                            <i class="fas fa-calendar"></i> February 5, 2026
+                        </div>
+                        <h3 class="post-title">Static NAT Configuration in Cisco Packet Tracer (Two Routers)</h3>
+                        <p class="post-excerpt">Hands-on lab configuring Static NAT between two routers, mapping private IPs to public IPs, understanding inside/outside interfaces, and verification...</p>
+                        <div class="post-tags">
+                            <span class="tag">NAT</span>
+                            <span class="tag">Static NAT</span>
+                            <span class="tag">Packet Tracer</span>
+                            <span class="tag">Cisco IOS</span>
+                        </div>
+                        <a href="./networking/static-nat.html" class="post-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+
+                <article class="post-card">
+                    <div class="post-category networking">Networking</div>
+                    <div class="post-content">
+                        <div class="post-date">
+                            <i class="fas fa-calendar"></i> February 5, 2026
+                        </div>
+                        <h3 class="post-title">Dynamic NAT Configuration in Cisco Packet Tracer (Two Routers)</h3>
+                        <p class="post-excerpt">Step-by-step guide to implementing Dynamic NAT with address pools, ACLs, and automatic IP assignment from a NAT pool...</p>
+                        <div class="post-tags">
+                            <span class="tag">Dynamic NAT</span>
+                            <span class="tag">NAT Pool</span>
+                            <span class="tag">Packet Tracer</span>
+                        </div>
+                        <a href="./networking/dynamic-nat.html" class="post-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+
+                <article class="post-card">
+                    <div class="post-category networking">Networking</div>
+                    <div class="post-content">
+                        <div class="post-date">
+                            <i class="fas fa-calendar"></i> February 6, 2026
+                        </div>
+                        <h3 class="post-title">Understanding EIGRP — The Smart Routing Protocol</h3>
+                        <p class="post-excerpt">Deep dive into EIGRP's hybrid nature, DUAL algorithm, metric calculation, and hands-on lab showing how delay manipulation affects path selection...</p>
+                        <div class="post-tags">
+                            <span class="tag">EIGRP</span>
+                            <span class="tag">Routing Protocol</span>
+                            <span class="tag">DUAL</span>
+                            <span class="tag">Cisco</span>
+                        </div>
+                        <a href="./networking/eigrp.html" class="post-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+
+                <article class="post-card">
+                    <div class="post-category networking">Networking</div>
+                    <div class="post-content">
+                        <div class="post-date">
+                            <i class="fas fa-calendar"></i> February 6, 2026
+                        </div>
+                        <h3 class="post-title">Access Control Lists (ACL) — Network Security Fundamentals</h3>
+                        <p class="post-excerpt">Complete guide to ACLs - standard, extended, and named access lists, wildcard masks, TCP vs UDP, and practical lab configurations for network security...</p>
+                        <div class="post-tags">
+                            <span class="tag">ACL</span>
+                            <span class="tag">Network Security</span>
+                            <span class="tag">Firewall</span>
+                            <span class="tag">Cisco IOS</span>
+                        </div>
+                        <a href="./networking/acl.html" class="post-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+                
+                <article class="post-card" data-category="networking" data-tags="rip v2 routing protocol vlsm classless distance vector hop count timers" data-title="RIP v2 Configuration — Routing Information Protocol">
+                    <div class="post-category networking">Networking</div>
+                    <div class="post-content">
+                        <div class="post-date">
+                            <i class="fas fa-calendar"></i> February 12, 2026
+                        </div>
+                        <h3 class="post-title">RIP v2 Configuration — Routing Information Protocol</h3>
+                        <p class="post-excerpt">Configuring RIP v2 across three routers with VLSM support, understanding distance-vector routing, timers, and the difference between RIP v1 and v2...</p>
+                        <div class="post-tags">
+                            <span class="tag">RIP v2</span>
+                            <span class="tag">Routing Protocol</span>
+                            <span class="tag">VLSM</span>
+                        </div>
+                        <a href="./networking/ripv2-configuration.html" class="post-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+
+                <article class="post-card" data-category="networking" data-tags="vlan inter-vlan router on a stick trunk 802.1q sub-interface dot1q encapsulation" data-title="Inter-VLAN Routing — Router on a Stick">
+                    <div class="post-category networking">Networking</div>
+                    <div class="post-content">
+                        <div class="post-date">
+                            <i class="fas fa-calendar"></i> February 13, 2026
+                        </div>
+                        <h3 class="post-title">Inter-VLAN Routing — Router on a Stick</h3>
+                        <p class="post-excerpt">Configuring inter-VLAN routing using sub-interfaces on a single router port, understanding trunk encapsulation, and routing traffic between VLANs...</p>
+                        <div class="post-tags">
+                            <span class="tag">VLAN</span>
+                            <span class="tag">Inter-VLAN</span>
+                            <span class="tag">Router on a Stick</span>
+                        </div>
+                        <a href="./networking/inter-vlan-routing.html" class="post-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+
+                <article class="post-card" data-category="networking" data-tags="pvst spanning tree vlan stp loop prevention root bridge 802.1d bpdu" data-title="PVST — Per-VLAN Spanning Tree Protocol">
+                    <div class="post-category networking">Networking</div>
+                    <div class="post-content">
+                        <div class="post-date">
+                            <i class="fas fa-calendar"></i> February 14, 2026
+                        </div>
+                        <h3 class="post-title">PVST — Per-VLAN Spanning Tree Protocol</h3>
+                        <p class="post-excerpt">Configuring PVST across three switches in a redundant topology, setting different root bridges per VLAN for load balancing, and preventing Layer 2 loops...</p>
+                        <div class="post-tags">
+                            <span class="tag">PVST</span>
+                            <span class="tag">Spanning Tree</span>
+                            <span class="tag">Loop Prevention</span>
+                        </div>
+                        <a href="./networking/pvst-configuration.html" class="post-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+
+                <!-- Add your posts here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h4>About</h4>
+                    <p>Documenting my journey through network security, server administration, and ethical hacking. Learning in public, one lab at a time.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="./index.html">Home</a></li>
+                        <li><a href="./index.html#learning-paths">Learning Paths</a></li>
+                        <li><a href="./all-posts.html">Blog Posts</a></li>
+                        <li><a href="./index.html#about">About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Categories</h4>
+                    <ul>
+                        <li><a href="./windows-server.html">Windows Server</a></li>
+                        <li><a href="./networking.html">Networking</a></li>
+                        <li><a href="./web-fundamentals.html">Web Technologies</a></li>
+                        <li><a href="./cybersecurity-101.html">Cybersecurity</a></li>
+                        <li><a href="./penetration-testing.html">Penetration Testing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Stay Updated</h4>
+                    <p>Follow along as I document new learnings and lab experiences.</p>
+                    <div class="social-links">
+                        <a href="https://github.com/manognya66" target="_blank"><i class="fab fa-github"></i></a>
+                        <a href="https://www.linkedin.com/in/r-shashank-manognya-070874255" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ThreatLens - Network Security Learning Blog. All rights reserved.</p>
+                <button class="back-to-top" id="backToTop">
+                    <i class="fas fa-chevron-up"></i>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../src/js/script.js"></script>
+</body>
+</html>

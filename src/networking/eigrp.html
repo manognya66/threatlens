@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Understanding EIGRP — The Smart Routing Protocol | ThreatLens</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/post-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <div class="nav-brand">
+                <img src="../logos/logo.svg" alt="ThreatLens Logo" style="width: 35px; height: 35px;">
+                <span>ThreatLens</span>
+            </div>
+            <button class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="../index.html#learning-paths" class="nav-link">Learning Paths</a></li>
+                <li><a href="../all-posts.html" class="nav-link active">All Posts</a></li>
+                <li><a href="../index.html#about" class="nav-link">About</a></li>
+            </ul>
+            <div class="nav-search" onclick="window.location.href='../all-posts.html'" style="cursor: pointer;">
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Post Header -->
+    <article class="post-article">
+        <div class="post-header">
+            <div class="container">
+                <div class="breadcrumb">
+                    <a href="../index.html"><i class="fas fa-home"></i> Home</a>
+                    <span>/</span>
+                    <a href="../networking.html">Networking</a>
+                    <span>/</span>
+                    <span>EIGRP</span>
+                </div>
+                <div class="post-category-badge" style="background: rgba(99,102,241,0.15); color: var(--networkingcolor); border: 1px solid rgba(99,102,241,0.3);">Networking</div>
+                <h1 class="post-main-title">Understanding EIGRP — The Smart Routing Protocol</h1>
+                <div class="post-meta-info">
+                    <div class="meta-item">
+                        <i class="fas fa-calendar"></i>
+                        <span>February 6, 2026</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-clock"></i>
+                        <span>8 min read</span>
+                    </div>
+                </div>
+                <div class="post-tags-header">
+                    <span class="tag">EIGRP</span>
+                    <span class="tag">Routing Protocol</span>
+                    <span class="tag">DUAL</span>
+                    <span class="tag">Cisco</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Post Content -->
+        <div class="post-body">
+            <div class="container post-container">
+                <!-- Table of Contents Sidebar -->
+                <aside class="post-sidebar">
+                    <div class="toc-wrapper">
+                        <h3 class="toc-title">Table of Contents</h3>
+                        <nav class="toc">
+                            <ul>
+                                <li><a href="#what-i-learned" class="toc-link active">What I Learned</a></li>
+                                <li><a href="#what-is-eigrp" class="toc-link">What is EIGRP</a></li>
+                                <li><a href="#my-topology" class="toc-link">My Lab Topology</a></li>
+                                <li><a href="#configuration" class="toc-link">Configuration</a></li>
+                                <li><a href="#key-takeaways" class="toc-link">Key Takeaways</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="share-section">
+                        <h4>Share This Post</h4>
+                        <div class="share-buttons">
+                            <a href="#" class="share-btn linkedin"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="share-btn reddit"><i class="fab fa-reddit"></i></a>
+                            <a href="#" class="share-btn link"><i class="fas fa-link"></i></a>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Main Content -->
+                <div class="post-content-main">
+                    <section id="what-i-learned">
+                        <h2>What I Learned</h2>
+                        <p>I set up a three-router EIGRP lab and experimented with manipulating delay values to see how it affects path selection. What surprised me: EIGRP doesn't just count hops like RIP — it actually thinks about the quality of the path.</p>
+                        <p>The moment I changed the delay on one interface and saw the routing table update automatically, the concept finally made sense.</p>
+                    </section>
+
+                    <section id="what-is-eigrp">
+                        <h2>What is EIGRP?</h2>
+                        <p>EIGRP (Enhanced Interior Gateway Routing Protocol) is a <strong>hybrid routing protocol</strong> developed by Cisco. It combines the best of distance-vector and link-state routing.</p>
+
+                        <div class="feature-box">
+                            <h4><i class="fas fa-bolt"></i> Key Facts</h4>
+                            <ul>
+                                <li>Uses <strong>Protocol Number 88</strong></li>
+                                <li>Multicast address: <code class="inline-code">224.0.0.10</code></li>
+                                <li>No periodic updates — only sends updates when topology changes</li>
+                                <li>Supports IPv4 and IPv6</li>
+                                <li>AD of <strong>90</strong> (internal), <strong>170</strong> (external)</li>
+                            </ul>
+                        </div>
+
+                        <h3>DUAL Algorithm</h3>
+                        <p>The brain of EIGRP is <strong>DUAL (Diffusing Update Algorithm)</strong>. It selects the best path (Successor) and keeps a backup ready (Feasible Successor).</p>
+                        <p>When a link fails, EIGRP doesn't recalculate from scratch — it instantly switches to the Feasible Successor. That's why convergence is so fast.</p>
+
+                        <h3>Metric — How Best Path is Chosen</h3>
+                        <p>By default, EIGRP uses <strong>Bandwidth and Delay</strong> to calculate the best path (not hop count). In my lab, I changed the K-values to use <strong>only Delay</strong>, which made it easier to see how path selection works.</p>
+
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Table</th>
+                                        <th>What It Stores</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Neighbor Table</td><td>Directly connected EIGRP routers</td></tr>
+                                    <tr><td>Topology Table</td><td>All learned routes (successors + backups)</td></tr>
+                                    <tr><td>Routing Table</td><td>Best paths chosen by DUAL</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section id="my-topology">
+                        <h2>My Lab Topology</h2>
+                        <p>Three routers (RA, RB, RC) connected in a triangle. I deliberately set different delay values on serial interfaces to force EIGRP to prefer one path over another.</p>
+
+                        <div class="callout callout-info">
+                            <div class="callout-icon"><i class="fas fa-flask"></i></div>
+                            <div class="callout-content">
+                                By changing delay on RB and RC, I could watch EIGRP recalculate and change the preferred route in real time.
+                            </div>
+                        </div>
+
+                        <h3>Autonomous System Number</h3>
+                        <p>All three routers used <strong>AS 100</strong>. EIGRP neighbors only form when the AS number matches — I confirmed this by testing with mismatched AS numbers first.</p>
+                    </section>
+
+                    <section id="configuration">
+                        <h2>Configuration Commands</h2>
+
+                        <h3>Router A (RA)</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">Cisco IOS</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-bash">enable
+configure terminal
+router eigrp 100
+ metric weights 0 0 0 1 0 0
+ network 10.0.0.0
+ network 20.0.0.0
+ network 60.0.0.0</code></pre>
+                        </div>
+
+                        <div class="callout callout-info">
+                            <div class="callout-icon"><i class="fas fa-info-circle"></i></div>
+                            <div class="callout-content">
+                                <code class="inline-code">metric weights 0 0 0 1 0 0</code> sets K3=1 so only <strong>Delay</strong> is used for metric calculation. This makes it easier to experiment with path selection.
+                            </div>
+                        </div>
+
+                        <h3>Router B (RB) — Set Delay First</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">Cisco IOS</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-bash">configure terminal
+interface serial0
+ delay 5
+interface serial1
+ delay 10
+router eigrp 100
+ network 20.0.0.0
+ network 30.0.0.0
+ network 40.0.0.0</code></pre>
+                        </div>
+
+                        <h3>Router C (RC) — Set Delay First</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">Cisco IOS</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-bash">configure terminal
+interface serial0
+ delay 5
+interface serial1
+ delay 3
+router eigrp 100
+ network 40.0.0.0
+ network 50.0.0.0
+ network 60.0.0.0</code></pre>
+                        </div>
+
+                        <h3>Verification</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">Cisco IOS</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-bash">show ip eigrp neighbors
+show ip eigrp topology
+show ip route</code></pre>
+                        </div>
+
+                        <div class="callout callout-success">
+                            <div class="callout-icon"><i class="fas fa-eye"></i></div>
+                            <div class="callout-content">
+                                After changing delay values and running <code>show ip eigrp topology</code>, I could see which path became the Successor and which became the Feasible Successor. Changing delay changed the metric and flipped the preferred route.
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="key-takeaways">
+                        <h2>Key Takeaways</h2>
+
+                        <div class="feature-box">
+                            <h4><i class="fas fa-key"></i> What I Understood</h4>
+                            <ul>
+                                <li>EIGRP uses Bandwidth + Delay by default, not hop count</li>
+                                <li>DUAL keeps a backup path ready — failover is instant</li>
+                                <li>AS numbers must match for neighbors to form</li>
+                                <li>Delay is the easiest metric to manipulate in a lab</li>
+                                <li>No periodic updates — only sends when something changes</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <!-- Related Posts -->
+                    <div class="related-posts">
+                        <h3>Related Posts</h3>
+                        <div class="related-grid">
+                            <a href="./osi-vs-tcpip.html" class="related-card">
+                                <div class="related-category networking">Networking</div>
+                                <h4>OSI vs TCP/IP</h4>
+                                <p>Understanding packet flow across layers...</p>
+                            </a>
+                            <a href="./acl.html" class="related-card">
+                                <div class="related-category networking">Networking</div>
+                                <h4>Access Control Lists</h4>
+                                <p>Network security with ACLs...</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h4>About</h4>
+                    <p>Documenting my journey through network security and system administration.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="../all-posts.html">All Posts</a></li>
+                        <li><a href="../index.html#about">About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Categories</h4>
+                    <ul>
+                        <li><a href="../windows-server.html">Windows Server</a></li>
+                        <li><a href="../networking.html">Networking</a></li>
+                        <li><a href="../cybersecurity-101.html">Cybersecurity</a></li>
+                        <li><a href="../penetration-testing.html">Penetration Testing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Stay Updated</h4>
+                    <p>Follow along as I document new learnings and lab experiences.</p>
+                    <div class="social-links">
+                        <a href="https://github.com/manognya66" target="_blank"><i class="fab fa-github"></i></a>
+                        <a href="https://www.linkedin.com/in/r-shashank-manognya-070874255" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ThreatLens. All rights reserved.</p>
+                <button class="back-to-top" id="backToTop">
+                    <i class="fas fa-chevron-up"></i>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="../js/script.js"></script>
+    <script src="../js/post-script.js"></script>
+</body>
+</html>

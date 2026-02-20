@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Posts | ThreatLens</title>
+    <link rel="stylesheet" href="../src/css/styles.css">
+    <link rel="stylesheet" href="../src/css/post-styles.css">
+    <link rel="shortcut icon" href="../src/logos/logo.svg" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        /* Enhanced filter styling */
+        #searchInput:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 0 3px rgba(100, 255, 218, 0.1);
+        }
+        
+        #categoryFilter {
+            appearance: none;
+            background-image: none;
+        }
+        
+        #categoryFilter:hover {
+            border-color: var(--accent-cyan);
+        }
+        
+        #categoryFilter:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 0 3px rgba(100, 255, 218, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <div class="nav-brand">
+                <img src="../src/logos/logo.svg" alt="ThreatLens Logo" style="width: 35px; height: 35px;">
+                <span>ThreatLens</span>
+            </div>
+            <button class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="./index.html" class="nav-link">Home</a></li>
+                <li><a href="./index.html#learning-paths" class="nav-link">Learning Paths</a></li>
+                <li><a href="./all-posts.html" class="nav-link active">All Posts</a></li>
+                <li><a href="./index.html#about" class="nav-link">About</a></li>
+            </ul>
+            <div class="nav-search" onclick="window.location.href='#posts'" style="cursor: pointer;">
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- All Posts Section -->
+    <section id="posts" style="padding-top: 100px; padding-bottom: 60px; background: var(--primary-bg); min-height: 100vh;">
+        <div class="container">
+            <!-- Page Header -->
+            <div style="text-align: center; margin-bottom: 3rem;">
+                <h1 style="font-size: 2.5rem; color: var(--text-heading); margin-bottom: 1rem;">All Posts</h1>
+                <p style="color: var(--text-secondary); font-size: 1.1rem;">Browse through all my learning documentation across every topic</p>
+            </div>
+
+            <!-- Search and Filter Bar -->
+            <div style="background: var(--card-bg); padding: 2rem; border-radius: 12px; margin-bottom: 3rem; border: 1px solid rgba(100, 255, 218, 0.1);">
+                <div style="display: flex; gap: 1.5rem; flex-wrap: wrap; align-items: center;">
+                    <!-- Search Box -->
+                    <div style="flex: 1; min-width: 300px;">
+                        <div style="position: relative;">
+                            <input type="text" id="searchInput" placeholder="Search posts by title, tags, or content..." 
+                                   style="width: 100%; padding: 0.75rem 1rem 0.75rem 3rem; background: var(--primary-bg); border: 2px solid rgba(100, 255, 218, 0.2); border-radius: 8px; color: var(--text-primary); font-size: 1rem; font-family: var(--font-primary); transition: all 0.3s ease;">
+                            <i class="fas fa-search" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--accent-cyan);"></i>
+                        </div>
+                    </div>
+                    
+                    <!-- Category Filter -->
+                    <div style="position: relative;">
+                        <select id="categoryFilter" style="appearance: none; padding: 0.75rem 3rem 0.75rem 1.5rem; background: var(--primary-bg); border: 2px solid rgba(100, 255, 218, 0.2); border-radius: 8px; color: var(--text-primary); font-size: 1rem; cursor: pointer; font-family: var(--font-primary); font-weight: 500; transition: all 0.3s ease;">
+                            <option value="all">All Categories</option>
+                            <option value="networking">Networking</option>
+                            <option value="windows-server">Windows Server</option>
+                            <option value="web">Web Fundamentals</option>
+                            <option value="presec">Cybersecurity 101</option>
+                            <option value="pentest">Penetration Testing</option>
+                        </select>
+                        <i class="fas fa-chevron-down" style="position: absolute; right: 1rem; top: 50%; transform: translateY(-50%); color: var(--accent-cyan); pointer-events: none; font-size: 0.8rem;"></i>
+                    </div>
+                </div>
+                
+                <!-- Results Count -->
+                <div id="resultCount" style="margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid rgba(100, 255, 218, 0.1); color: var(--text-secondary); font-size: 0.95rem; display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fas fa-list-ul" style="color: var(--accent-cyan);"></i>
+                    Showing <span id="countNumber" style="color: var(--accent-cyan); font-weight: 600; margin: 0 0.25rem;">0</span> posts
+                </div>
+            </div>
+
+            <!-- Posts Grid -->
+            <div id="postsContainer" class="posts-timeline">
+
+                <article class="post-card" data-category="networking" data-tags="rip v2 routing protocol vlsm classless distance vector hop count timers" data-title="RIP v2 Configuration — Routing Information Protocol">
+                    <div class="post-category networking">Networking</div>
+                    <div class="post-content">
+                        <div class="post-date">
+                            <i class="fas fa-calendar"></i> February 12, 2026
+                        </div>
+                        <h3 class="post-title">RIP v2 Configuration — Routing Information Protocol</h3>
+                        <p class="post-excerpt">Configuring RIP v2 across three routers with VLSM support, understanding distance-vector routing, timers, and the difference between RIP v1 and v2...</p>
+                        <div class="post-tags">
+                            <span class="tag">RIP v2</span>
+                            <span class="tag">Routing Protocol</span>
+                            <span class="tag">VLSM</span>
+                        </div>
+                        <a href="./networking/ripv2-configuration.html" class="post-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+                
+                <!-- POST: IIS and FTP Configuration -->
+                <article class="post-card" data-category="windows-server" data-tags="iis ftp web server file transfer domain authentication windows server firewall" data-title="IIS and FTP Role Configuration in Domain Network">
+                    <div class="post-category" style="background: rgba(99,102,241,0.15); color: #818cf8; border: 1px solid rgba(99,102,241,0.3); display: inline-block; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; align-self: flex-start;">Windows Server</div>
+                    <div class="post-content">
+                        <div class="post-date">
+                            <i class="fas fa-calendar"></i> February 11, 2026
+                        </div>
+                        <h3 class="post-title">IIS and FTP Role Configuration in Domain Network</h3>
+                        <p class="post-excerpt">Installing IIS web server, hosting a custom HTML site, setting up FTP server with domain authentication, and configuring firewall rules for file transfers...</p>
+                        <div class="post-tags">
+                            <span class="tag">IIS</span>
+                            <span class="tag">FTP Server</span>
+                            <span class="tag">Web Server</span>
+                        </div>
+                        <a href="./windows-server/iis-ftp-configuration.html" class="post-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+
+                <!-- POST: Group Policy in an OU -->
+                <article class="post-card" data-category="windows-server" data-tags="group policy gpo active directory ou windows server domain gpmc gpresult" data-title="Applying Group Policy in an OU">
+                    <div class="post-category" style="background: rgba(99,102,241,0.15); color: #818cf8; border: 1px solid rgba(99,102,241,0.3); display: inline-block; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; align-self: flex-start;">Windows Server</div>
+                    <div class="post-content">
+                        <div class="post-date">
+                            <i class="fas fa-calendar"></i> February 10, 2026
+                        </div>
+                        <h3 class="post-title">Applying Group Policy in an OU</h3>
+                        <p class="post-excerpt">Creating and linking GPOs, blocking Control Panel access, pushing a desktop wallpaper, setting password policy, and verifying with gpresult...</p>
+                        <div class="post-tags">
+                            <span class="tag">Group Policy</span>
+                            <span class="tag">GPO</span>
+                            <span class="tag">Active Directory</span>
+                        </div>
+                        <a href="./windows-server/group-policy-ou.html" class="post-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+
+                <!-- POST: Active Directory User Profiles -->
+                <article class="post-card" data-category="windows-server" data-tags="active directory user profiles domain network windows server roaming profiles ad ds dc" data-title="Creating Active Directory User Profiles in a Domain Network">
+                    <div class="post-category" style="background: rgba(99,102,241,0.15); color: #818cf8; border: 1px solid rgba(99,102,241,0.3); display: inline-block; padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; align-self: flex-start;">Windows Server</div>
+                    <div class="post-content">
+                        <div class="post-date">
+                            <i class="fas fa-calendar"></i> February 10, 2026
+                        </div>
+                        <h3 class="post-title">Creating Active Directory User Profiles in a Domain Network</h3>
+                        <p class="post-excerpt">Setting up AD DS, creating a domain, organizing users in OUs, joining a client to the domain, and configuring roaming profiles...</p>
+                        <div class="post-tags">
+                            <span class="tag">Active Directory</span>
+                            <span class="tag">User Profiles</span>
+                            <span class="tag">Domain Network</span>
+                        </div>
+                        <a href="./windows-server/active-directory-user-profiles.html" class="post-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+
+                <!-- POST: ACL -->
+                <article class="post-card" data-category="networking" data-tags="acl network security firewall cisco ios wildcard mask tcp udp extended access list" data-title="Access Control Lists (ACL)">
+                    <div class="post-category networking">Networking</div>
+                    <div class="post-content">
+                        <div class="post-date">
+                            <i class="fas fa-calendar"></i> February 6, 2026
+                        </div>
+                        <h3 class="post-title">Access Control Lists (ACL)</h3>
+                        <p class="post-excerpt">Hands-on extended ACL lab blocking specific traffic between a server and two PCs — wildcard masks, protocol filtering, and verification commands...</p>
+                        <div class="post-tags">
+                            <span class="tag">ACL</span>
+                            <span class="tag">Network Security</span>
+                            <span class="tag">Firewall</span>
+                        </div>
+                        <a href="./networking/acl.html" class="post-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+
+                <!-- POST: EIGRP -->
+                <article class="post-card" data-category="networking" data-tags="eigrp routing protocol dual algorithm cisco delay metric bandwidth" data-title="Understanding EIGRP — The Smart Routing Protocol">
+                    <div class="post-category networking">Networking</div>
+                    <div class="post-content">
+                        <div class="post-date">
+                            <i class="fas fa-calendar"></i> February 6, 2026
+                        </div>
+                        <h3 class="post-title">Understanding EIGRP — The Smart Routing Protocol</h3>
+                        <p class="post-excerpt">Three-router lab experimenting with delay manipulation to see how EIGRP selects paths using DUAL algorithm and metric calculation...</p>
+                        <div class="post-tags">
+                            <span class="tag">EIGRP</span>
+                            <span class="tag">Routing Protocol</span>
+                            <span class="tag">DUAL</span>
+                        </div>
+                        <a href="./networking/eigrp.html" class="post-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+
+                <!-- POST: OSI vs TCP/IP -->
+                <article class="post-card" data-category="networking" data-tags="osi model tcp/ip packet flow packet tracer layers encapsulation dns arp" data-title="OSI vs TCP/IP — Understanding Packet Flow">
+                    <div class="post-category networking">Networking</div>
+                    <div class="post-content">
+                        <div class="post-date">
+                            <i class="fas fa-calendar"></i> February 5, 2026
+                        </div>
+                        <h3 class="post-title">OSI vs TCP/IP — Understanding Packet Flow</h3>
+                        <p class="post-excerpt">Using Packet Tracer's Simulation Mode to watch a real HTTP request move layer by layer — DNS, TCP handshake, routing, ARP, and encapsulation...</p>
+                        <div class="post-tags">
+                            <span class="tag">OSI Model</span>
+                            <span class="tag">TCP/IP</span>
+                            <span class="tag">Packet Flow</span>
+                        </div>
+                        <a href="./networking/osi-vs-tcpip.html" class="post-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+
+                <!-- POST: Static NAT -->
+                <article class="post-card" data-category="networking" data-tags="nat static nat packet tracer cisco ios inside outside interface translation" data-title="Static NAT Configuration">
+                    <div class="post-category networking">Networking</div>
+                    <div class="post-content">
+                        <div class="post-date">
+                            <i class="fas fa-calendar"></i> February 5, 2026
+                        </div>
+                        <h3 class="post-title">Static NAT Configuration</h3>
+                        <p class="post-excerpt">Configuring permanent one-to-one NAT mappings across two routers, verifying translations, and understanding inside/outside interfaces...</p>
+                        <div class="post-tags">
+                            <span class="tag">NAT</span>
+                            <span class="tag">Static NAT</span>
+                            <span class="tag">Cisco IOS</span>
+                        </div>
+                        <a href="./networking/static-nat.html" class="post-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+
+                <!-- POST: Dynamic NAT -->
+                <article class="post-card" data-category="networking" data-tags="dynamic nat packet tracer address pools acl nat pool overload pat" data-title="Dynamic NAT Configuration">
+                    <div class="post-category networking">Networking</div>
+                    <div class="post-content">
+                        <div class="post-date">
+                            <i class="fas fa-calendar"></i> February 5, 2026
+                        </div>
+                        <h3 class="post-title">Dynamic NAT Configuration</h3>
+                        <p class="post-excerpt">Setting up Dynamic NAT with address pools and ACLs, watching temporary mappings appear and disappear in the translation table...</p>
+                        <div class="post-tags">
+                            <span class="tag">Dynamic NAT</span>
+                            <span class="tag">NAT Pool</span>
+                            <span class="tag">Cisco IOS</span>
+                        </div>
+                        <a href="./networking/dynamic-nat.html" class="post-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+
+                <article class="post-card" data-category="networking" data-tags="vlan inter-vlan router on a stick trunk 802.1q sub-interface dot1q encapsulation" data-title="Inter-VLAN Routing — Router on a Stick">
+                    <div class="post-category networking">Networking</div>
+                    <div class="post-content">
+                        <div class="post-date">
+                            <i class="fas fa-calendar"></i> February 13, 2026
+                        </div>
+                        <h3 class="post-title">Inter-VLAN Routing — Router on a Stick</h3>
+                        <p class="post-excerpt">Configuring inter-VLAN routing using sub-interfaces on a single router port, understanding trunk encapsulation, and routing traffic between VLANs...</p>
+                        <div class="post-tags">
+                            <span class="tag">VLAN</span>
+                            <span class="tag">Inter-VLAN</span>
+                            <span class="tag">Router on a Stick</span>
+                        </div>
+                        <a href="./networking/inter-vlan-routing.html" class="post-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+                <article class="post-card" data-category="networking" data-tags="pvst spanning tree vlan stp loop prevention root bridge 802.1d bpdu" data-title="PVST — Per-VLAN Spanning Tree Protocol">
+                    <div class="post-category networking">Networking</div>
+                    <div class="post-content">
+                        <div class="post-date">
+                            <i class="fas fa-calendar"></i> February 14, 2026
+                        </div>
+                        <h3 class="post-title">PVST — Per-VLAN Spanning Tree Protocol</h3>
+                        <p class="post-excerpt">Configuring PVST across three switches in a redundant topology, setting different root bridges per VLAN for load balancing, and preventing Layer 2 loops...</p>
+                        <div class="post-tags">
+                            <span class="tag">PVST</span>
+                            <span class="tag">Spanning Tree</span>
+                            <span class="tag">Loop Prevention</span>
+                        </div>
+                        <a href="./networking/pvst-configuration.html" class="post-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+            </div>
+
+            <!-- No Results Message -->
+            <div id="noResults" style="display: none; text-align: center; padding: 4rem 2rem; color: var(--text-secondary);">
+                <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 1rem; display: block; opacity: 0.5; color: var(--accent-cyan);"></i>
+                <h3 style="color: var(--text-heading); margin-bottom: 0.5rem;">No posts found</h3>
+                <p>Try adjusting your search or filter criteria</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h4>About</h4>
+                    <p>Documenting my journey through network security, server administration, and ethical hacking. Learning in public, one lab at a time.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="./index.html">Home</a></li>
+                        <li><a href="./index.html#learning-paths">Learning Paths</a></li>
+                        <li><a href="./all-posts.html">All Posts</a></li>
+                        <li><a href="./index.html#about">About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Categories</h4>
+                    <ul>
+                        <li><a href="./windows-server.html">Windows Server</a></li>
+                        <li><a href="./networking.html">Networking</a></li>
+                        <li><a href="./web-fundamentals.html">Web Technologies</a></li>
+                        <li><a href="./cybersecurity-101.html">Cybersecurity</a></li>
+                        <li><a href="./penetration-testing.html">Penetration Testing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Stay Updated</h4>
+                    <p>Follow along as I document new learnings and lab experiences.</p>
+                    <div class="social-links">
+                        <a href="https://github.com/manognya66" target="_blank"><i class="fab fa-github"></i></a>
+                        <a href="https://www.linkedin.com/in/r-shashank-manognya-070874255" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ThreatLens - Network Security Learning Blog. All rights reserved.</p>
+                <button class="back-to-top" id="backToTop">
+                    <i class="fas fa-chevron-up"></i>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../src/js/script.js"></script>
+    <script src="../src/js/post-script.js"></script>
+    <script src="../src/js/search.js"></script>
+</body>
+</html>

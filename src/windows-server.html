@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows Server & Active Directory | ThreatLens</title>
+    <link rel="stylesheet" href="../src/css/styles.css">
+    <link rel="stylesheet" href="../src/css/post-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <div class="nav-brand">
+                <img src="../src/logos/logo.svg" alt="ThreatLens Logo" style="width: 35px; height: 35px;">
+                <span>ThreatLens</span>
+            </div>
+            <button class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="./index.html" class="nav-link">Home</a></li>
+                <li><a href="./index.html#learning-paths" class="nav-link active">Learning Paths</a></li>
+                <li><a href="./all-posts.html" class="nav-link">All Posts</a></li>
+                <li><a href="./index.html#about" class="nav-link">About</a></li>
+            </ul>
+            <div class="nav-search" onclick="window.location.href='../all-posts.html'" style="cursor: pointer;">
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Category Header -->
+    <section class="category-header" style="padding-top: 100px; padding-bottom: 60px; background: var(--secondary-bg);">
+        <div class="container">
+            <div class="breadcrumb">
+                <a href="./index.html"><i class="fas fa-home"></i> Home</a>
+                <span>/</span>
+                <span>Windows Server & Active Directory</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 2rem; margin-top: 2rem;">
+                <div style="width: 80px; height: 80px; background: rgba(0, 120, 212, 0.2); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: var(--windows-server-color);">
+                    <i class="fas fa-server"></i>
+                </div>
+                <div>
+                    <h1 style="font-size: 2.5rem; color: var(--text-heading); margin-bottom: 0.5rem;">Windows Server & Active Directory</h1>
+                    <p style="color: var(--text-secondary); font-size: 1.1rem;">Deep dive into Windows Server administration, Group Policy, DNS, DHCP, and Active Directory management</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Posts List -->
+    <section class="posts-section" style="padding: 60px 0; background: var(--primary-bg);">
+        <div class="container">
+            <!-- Introduction -->
+            <div style="background: var(--card-bg); padding: 2rem; border-radius: 12px; margin-bottom: 3rem; border-left: 4px solid var(--windows-server-color);">
+                <h3 style="color: var(--text-heading); margin-bottom: 1rem;">About This Section</h3>
+                <p style="color: var(--text-secondary); line-height: 1.8; margin: 0;">This section covers Windows Server administration, Active Directory, Group Policy, DNS, DHCP, and other core server management topics through hands-on labs and practical implementations.</p>
+            </div>
+
+            <div class="posts-timeline">
+
+                <!-- Post 1: Active Directory User Profiles -->
+                <article class="post-card">
+                    <div class="post-category" style="background: rgba(99,102,241,0.15); color: #818cf8; border: 1px solid rgba(99,102,241,0.3); display: inline-block; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem;">Windows Server</div>
+                    <div class="post-content">
+                        <div class="post-date">
+                            <i class="fas fa-calendar"></i> February 10, 2026
+                        </div>
+                        <h3 class="post-title">Creating Active Directory User Profiles in a Domain Network</h3>
+                        <p class="post-excerpt">Setting up AD DS, creating a domain, organizing users in OUs, joining a client to the domain, and configuring roaming profiles so user settings follow them across machines.</p>
+                        <div class="post-tags">
+                            <span class="tag">Active Directory</span>
+                            <span class="tag">User Profiles</span>
+                            <span class="tag">Domain Network</span>
+                        </div>
+                        <a href="windows-server/active-directory-user-profiles.html" class="post-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+
+                <!-- Post 2: Group Policy in an OU -->
+                <article class="post-card">
+                    <div class="post-category" style="background: rgba(99,102,241,0.15); color: #818cf8; border: 1px solid rgba(99,102,241,0.3); display: inline-block; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem;">Windows Server</div>
+                    <div class="post-content">
+                        <div class="post-date">
+                            <i class="fas fa-calendar"></i> February 10, 2026
+                        </div>
+                        <h3 class="post-title">Applying Group Policy in an OU</h3>
+                        <p class="post-excerpt">Creating and linking GPOs to an Organizational Unit, blocking Control Panel access, pushing a desktop wallpaper, setting password policy, and verifying with gpresult.</p>
+                        <div class="post-tags">
+                            <span class="tag">Group Policy</span>
+                            <span class="tag">GPO</span>
+                            <span class="tag">Active Directory</span>
+                        </div>
+                        <a href="windows-server/group-policy-ou.html" class="post-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+
+                <article class="post-card" data-category="windows-server">
+                    <div class="post-category" style="background: rgba(99,102,241,0.15); color: #818cf8; border: 1px solid rgba(99,102,241,0.3); display: inline-block; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.75rem; font-weight: 600; margin-bottom: 1rem;">Windows Server</div>
+                    <div class="post-content">
+                        <div class="post-date">
+                            <i class="fas fa-calendar"></i> February 11, 2026
+                        </div>
+                        <h3 class="post-title">IIS and FTP Role Configuration in Domain Network</h3>
+                        <p class="post-excerpt">Installing IIS web server, hosting a custom HTML site, setting up FTP server with domain authentication, and configuring firewall rules for file transfers...</p>
+                        <div class="post-tags">
+                            <span class="tag">IIS</span>
+                            <span class="tag">FTP Server</span>
+                            <span class="tag">Web Server</span>
+                        </div>
+                        <a href="windows-server/iis-ftp-configuration.html" class="post-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+
+                <!-- Add your posts here -->
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h4>About</h4>
+                    <p>Documenting my journey through network security, server administration, and ethical hacking. Learning in public, one lab at a time.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="./index.html">Home</a></li>
+                        <li><a href="./index.html#learning-paths">Learning Paths</a></li>
+                        <li><a href="./all-posts.html">All Posts</a></li>
+                        <li><a href="./index.html#about">About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Categories</h4>
+                    <ul>
+                        <li><a href="./windows-server.html">Windows Server</a></li>
+                        <li><a href="./networking.html">Networking</a></li>
+                        <li><a href="./web-fundamentals.html">Web Technologies</a></li>
+                        <li><a href="./cybersecurity-101.html">Cybersecurity</a></li>
+                        <li><a href="./penetration-testing.html">Penetration Testing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Stay Updated</h4>
+                    <p>Follow along as I document new learnings and lab experiences.</p>
+                    <div class="social-links">
+                        <a href="https://github.com/manognya66" target="_blank"><i class="fab fa-github"></i></a>
+                        <a href="https://www.linkedin.com/in/r-shashank-manognya-070874255" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ThreatLens - Network Security Learning Blog. All rights reserved.</p>
+                <button class="back-to-top" id="backToTop">
+                    <i class="fas fa-chevron-up"></i>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../src/js/script.js"></script>
+</body>
+</html>

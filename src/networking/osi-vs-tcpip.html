@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OSI vs TCP/IP — Understanding with a Real Packet Flow | ThreatLens</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/post-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <div class="nav-brand">
+                <img src="../logos/logo.svg" alt="ThreatLens Logo" style="width: 35px; height: 35px;">
+                <span>ThreatLens</span>
+            </div>
+            <button class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="../index.html#learning-paths" class="nav-link">Learning Paths</a></li>
+                <li><a href="../all-posts.html" class="nav-link active">All Posts</a></li>
+                <li><a href="../index.html#about" class="nav-link">About</a></li>
+            </ul>
+            <div class="nav-search" onclick="window.location.href='../all-posts.html'" style="cursor: pointer;">
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Post Header -->
+    <article class="post-article">
+        <div class="post-header">
+            <div class="container">
+                <div class="breadcrumb">
+                    <a href="../index.html"><i class="fas fa-home"></i> Home</a>
+                    <span>/</span>
+                    <a href="../networking.html">Networking</a>
+                    <span>/</span>
+                    <span>OSI vs TCP/IP</span>
+                </div>
+                <div class="post-category-badge" style="background: rgba(99,102,241,0.15); color: var(--networkingcolor); border: 1px solid rgba(99,102,241,0.3);">Networking</div>
+                <h1 class="post-main-title">OSI vs TCP/IP — Understanding Packet Flow</h1>
+                <div class="post-meta-info">
+                    <div class="meta-item">
+                        <i class="fas fa-calendar"></i>
+                        <span>February 5, 2026</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-clock"></i>
+                        <span>8 min read</span>
+                    </div>
+                </div>
+                <div class="post-tags-header">
+                    <span class="tag">OSI Model</span>
+                    <span class="tag">TCP/IP</span>
+                    <span class="tag">Packet Flow</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Post Content -->
+        <div class="post-body">
+            <div class="container post-container">
+                <!-- Table of Contents Sidebar -->
+                <aside class="post-sidebar">
+                    <div class="toc-wrapper">
+                        <h3 class="toc-title">Table of Contents</h3>
+                        <nav class="toc">
+                            <ul>
+                                <li><a href="#what-i-learned" class="toc-link active">What I Learned</a></li>
+                                <li><a href="#the-models" class="toc-link">The Two Models</a></li>
+                                <li><a href="#packet-flow" class="toc-link">Packet Flow Example</a></li>
+                                <li><a href="#lab-setup" class="toc-link">My Lab Setup</a></li>
+                                <li><a href="#key-takeaways" class="toc-link">Key Takeaways</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+
+                    <!-- Share Section -->
+                    <div class="share-section">
+                        <h4>Share This Post</h4>
+                        <div class="share-buttons">
+                            <a href="#" class="share-btn linkedin"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="share-btn reddit"><i class="fab fa-reddit"></i></a>
+                            <a href="#" class="share-btn link"><i class="fas fa-link"></i></a>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Main Content -->
+                <div class="post-content-main">
+                    <section id="what-i-learned">
+                        <h2>What I Learned</h2>
+                        <p>I spent time in Packet Tracer trying to understand how the OSI and TCP/IP models actually work when you open a website. Everyone memorizes the layers, but I wanted to see them in action.</p>
+                        
+                        <p>The biggest realization: <strong>these aren't just theoretical concepts</strong>. Every time data moves across a network, it goes through these layers — wrapping and unwrapping information at each step.</p>
+                    </section>
+
+                    <section id="the-models">
+                        <h2>The Two Models</h2>
+                        
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>OSI (7 Layers)</th>
+                                        <th>TCP/IP (4 Layers)</th>
+                                        <th>What Happens</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Application<br>Presentation<br>Session</td>
+                                        <td>Application</td>
+                                        <td>User programs, data formatting, encryption</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Transport</td>
+                                        <td>Transport</td>
+                                        <td>TCP/UDP, ports, reliability</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Network</td>
+                                        <td>Internet</td>
+                                        <td>IP addresses, routing</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Data Link<br>Physical</td>
+                                        <td>Network Access</td>
+                                        <td>MAC addresses, physical transmission</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <p><strong>OSI = Teaching model</strong> (theoretical)<br>
+                        <strong>TCP/IP = Practical model</strong> (what actually runs on networks)</p>
+                    </section>
+
+                    <section id="packet-flow">
+                        <h2>Real Example: Opening google.com</h2>
+                        <p>When I opened <code class="inline-code">https://google.com</code> in my lab browser, here's what I observed happening:</p>
+
+                        <h3>1. DNS Resolution (Application Layer)</h3>
+                        <p>Browser asks: "What's the IP address of google.com?"<br>
+                        DNS server replies with the IP.</p>
+
+                        <h3>2. TCP Handshake (Transport Layer)</h3>
+                        <p>Three-way handshake begins:<br>
+                        SYN → SYN-ACK → ACK<br>
+                        Port 443 for HTTPS is used.</p>
+
+                        <h3>3. IP Routing (Network Layer)</h3>
+                        <p>Router checks: "Is this IP in my network?"<br>
+                        No → Send to default gateway<br>
+                        Source IP and Destination IP added to packet.</p>
+
+                        <h3>4. MAC Addressing (Data Link Layer)</h3>
+                        <p>Router needs MAC address of next hop<br>
+                        ARP request: "Who has this IP?"<br>
+                        Switches forward frames using MAC tables.</p>
+
+                        <h3>5. Physical Transmission</h3>
+                        <p>Bits travel as electrical signals through cables.</p>
+
+                        <div class="callout callout-info">
+                            <div class="callout-icon"><i class="fas fa-lightbulb"></i></div>
+                            <div class="callout-content">
+                                <strong>Encapsulation:</strong> Each layer adds its own header. Data → Segment → Packet → Frame → Bits
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="lab-setup">
+                        <h2>My Lab Setup</h2>
+                        <p>I created a simple topology in Packet Tracer to watch packets move through these layers in Simulation Mode. Seeing the packet get encapsulated at each layer made everything click.</p>
+
+                        <div class="callout callout-success">
+                            <div class="callout-icon"><i class="fas fa-download"></i></div>
+                            <div class="callout-content">
+                                <p style="margin-bottom: 0.5rem;"><strong>Download my Packet Tracer lab:</strong></p>
+                                <a href="https://raw.githubusercontent.com/manognya66/blog/main/assets/labs/osi_vs_tcp/networking/osi_vs_tcp.pkt" class="btn btn-primary">
+                                    <i class="fas fa-download"></i> Download Lab File
+                                </a>
+                            </div>
+                        </div>
+
+                        <h3>What I Did</h3>
+                        <ul>
+                            <li>Set up PC → Switch → Router → Internet topology</li>
+                            <li>Opened Simulation Mode in Packet Tracer</li>
+                            <li>Sent an HTTP request</li>
+                            <li>Watched headers get added at each layer</li>
+                            <li>Observed the return journey (decapsulation)</li>
+                        </ul>
+                    </section>
+
+                    <section id="key-takeaways">
+                        <h2>Key Takeaways</h2>
+                        
+                        <div class="feature-box">
+                            <h4><i class="fas fa-key"></i> What I Understood</h4>
+                            <ul>
+                                <li>OSI and TCP/IP aren't competing — they describe the same process differently</li>
+                                <li>Every network communication goes through these layers</li>
+                                <li>Troubleshooting becomes easier when you know which layer to check</li>
+                                <li>Packet Tracer's Simulation Mode is perfect for visualizing this</li>
+                            </ul>
+                        </div>
+
+                        <h3>For Troubleshooting</h3>
+                        <p>Now when something breaks, I know where to look:</p>
+                        <ul>
+                            <li>Can't reach website? → Check Application/Transport layer (DNS, ports)</li>
+                            <li>Can't ping outside network? → Check Network layer (routing, gateway)</li>
+                            <li>Can't communicate with device on same network? → Check Data Link (ARP, MAC)</li>
+                            <li>No link lights? → Check Physical layer (cables)</li>
+                        </ul>
+                    </section>
+
+                    <!-- Related Posts -->
+                    <div class="related-posts">
+                        <h3>Related Posts</h3>
+                        <div class="related-grid">
+                            <a href="./static-nat.html" class="related-card">
+                                <div class="related-category networking">Networking</div>
+                                <h4>Static NAT Configuration</h4>
+                                <p>Mapping private IPs to public IPs...</p>
+                            </a>
+                            <a href="./acl.html" class="related-card">
+                                <div class="related-category networking">Networking</div>
+                                <h4>Access Control Lists</h4>
+                                <p>Network security with ACLs...</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h4>About</h4>
+                    <p>Documenting my journey through network security and system administration.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="../all-posts.html">All Posts</a></li>
+                        <li><a href="../index.html#about">About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Categories</h4>
+                    <ul>
+                        <li><a href="../windows-server.html">Windows Server</a></li>
+                        <li><a href="../networking.html">Networking</a></li>
+                        <li><a href="../cybersecurity-101.html">Cybersecurity</a></li>
+                        <li><a href="../penetration-testing.html">Penetration Testing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Stay Updated</h4>
+                    <p>Follow along as I document new learnings and lab experiences.</p>
+                    <div class="social-links">
+                        <a href="https://github.com/manognya66" target="_blank"><i class="fab fa-github"></i></a>
+                        <a href="https://www.linkedin.com/in/r-shashank-manognya-070874255" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ThreatLens. All rights reserved.</p>
+                <button class="back-to-top" id="backToTop">
+                    <i class="fas fa-chevron-up"></i>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="../js/script.js"></script>
+    <script src="../js/post-script.js"></script>
+</body>
+</html>

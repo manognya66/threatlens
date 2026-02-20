@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inter-VLAN Routing — Router on a Stick | ThreatLens</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/post-styles.css">
+    <link rel="shortcut icon" href="../src/logos/logo.svg" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <div class="nav-brand">
+                <img src="../logos/logo.svg" alt="ThreatLens Logo" style="width: 35px; height: 35px;">
+                <span>ThreatLens</span>
+            </div>
+            <button class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="../index.html#learning-paths" class="nav-link">Learning Paths</a></li>
+                <li><a href="../all-posts.html" class="nav-link active">All Posts</a></li>
+                <li><a href="../index.html#about" class="nav-link">About</a></li>
+            </ul>
+            <div class="nav-search" onclick="window.location.href='../all-posts.html'" style="cursor: pointer;">
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Post Header -->
+    <article class="post-article">
+        <div class="post-header">
+            <div class="container">
+                <div class="breadcrumb">
+                    <a href="../index.html"><i class="fas fa-home"></i> Home</a>
+                    <span>/</span>
+                    <a href="../networking.html">Networking</a>
+                    <span>/</span>
+                    <span>Inter-VLAN Routing</span>
+                </div>
+                <div class="post-category-badge ccna">Networking</div>
+                <h1 class="post-main-title">Inter-VLAN Routing — Router on a Stick</h1>
+                <div class="post-meta-info">
+                    <div class="meta-item">
+                        <i class="fas fa-calendar"></i>
+                        <span>February 13, 2026</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-clock"></i>
+                        <span>10 min read</span>
+                    </div>
+                </div>
+                <div class="post-tags-header">
+                    <span class="tag">VLAN</span>
+                    <span class="tag">Inter-VLAN</span>
+                    <span class="tag">Router on a Stick</span>
+                    <span class="tag">Trunk</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Post Content -->
+        <div class="post-body">
+            <div class="container post-container">
+                <!-- Table of Contents Sidebar -->
+                <aside class="post-sidebar">
+                    <div class="toc-wrapper">
+                        <h3 class="toc-title">Table of Contents</h3>
+                        <nav class="toc">
+                            <ul>
+                                <li><a href="#what-i-learned" class="toc-link active">What I Learned</a></li>
+                                <li><a href="#what-is-inter-vlan" class="toc-link">What is Inter-VLAN Routing</a></li>
+                                <li><a href="#my-topology" class="toc-link">My Lab Topology</a></li>
+                                <li><a href="#configuration" class="toc-link">Configuration</a></li>
+                                <li><a href="#key-takeaways" class="toc-link">Key Takeaways</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="share-section">
+                        <h4>Share This Post</h4>
+                        <div class="share-buttons">
+                            <a href="#" class="share-btn linkedin"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="share-btn reddit"><i class="fab fa-reddit"></i></a>
+                            <a href="#" class="share-btn link"><i class="fas fa-link"></i></a>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Main Content -->
+                <div class="post-content-main">
+
+                    <section id="what-i-learned">
+                        <h2>What I Learned</h2>
+                        <p>I configured inter-VLAN routing using a single router interface with sub-interfaces — the "Router on a Stick" method. The coolest part: two computers on different VLANs (completely isolated at Layer 2) could ping each other through the router.</p>
+                        <p>Before this lab, I didn't fully understand why we need a router to communicate between VLANs. Now I get it: VLANs are separate broadcast domains, so they need Layer 3 routing to talk to each other.</p>
+                    </section>
+
+                    <section id="what-is-inter-vlan">
+                        <h2>What is Inter-VLAN Routing?</h2>
+                        <p><strong>Inter-VLAN routing</strong> allows devices on different VLANs to communicate with each other. Since VLANs are isolated broadcast domains at Layer 2, you need a Layer 3 device (router or Layer 3 switch) to route traffic between them.</p>
+
+                        <h3>Why Do We Need Inter-VLAN Routing?</h3>
+                        <p>VLANs segment a network into separate broadcast domains. Without inter-VLAN routing:</p>
+                        <ul>
+                            <li>VLAN 10 cannot talk to VLAN 20</li>
+                            <li>Each VLAN is completely isolated</li>
+                            <li>No communication between departments, even on the same physical switch</li>
+                        </ul>
+
+                        <h3>What is "Router on a Stick"?</h3>
+                        <p><strong>Router on a Stick</strong> is a method where a single router interface connects to a switch trunk port and uses sub-interfaces to route between VLANs. Each sub-interface represents a different VLAN and acts as the default gateway for that VLAN.</p>
+
+                        <div class="callout callout-info">
+                            <div class="callout-icon"><i class="fas fa-lightbulb"></i></div>
+                            <div class="callout-content">
+                                <strong>Why "Router on a Stick"?</strong> The name comes from the visual: one physical router interface (the "stick") handles all VLANs through logical sub-interfaces. It's like plugging all VLANs into one router port.
+                            </div>
+                        </div>
+
+                        <h3>Key Concepts</h3>
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Term</th>
+                                        <th>What It Means</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Trunk Port</strong></td>
+                                        <td>Switch port that carries traffic for multiple VLANs (tagged with VLAN IDs)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Access Port</strong></td>
+                                        <td>Switch port that carries traffic for only one VLAN (untagged)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Sub-interface</strong></td>
+                                        <td>Logical interface on a router (e.g., Fa0/0.10, Fa0/0.20)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>802.1Q (dot1q)</strong></td>
+                                        <td>IEEE standard for VLAN tagging on trunk links</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Encapsulation</strong></td>
+                                        <td>Adding VLAN tags to frames so they can be identified on trunk links</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Default Gateway</strong></td>
+                                        <td>Router IP address that devices use to reach other networks</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3>Inter-VLAN Routing Methods</h3>
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Method</th>
+                                        <th>How It Works</th>
+                                        <th>Pros / Cons</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Router on a Stick</strong></td>
+                                        <td>One router interface, multiple sub-interfaces</td>
+                                        <td>✅ Cost-effective<br>❌ Single point of failure</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Layer 3 Switch</strong></td>
+                                        <td>Switch with routing capabilities (SVI)</td>
+                                        <td>✅ Faster routing<br>❌ More expensive</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Separate Router Interfaces</strong></td>
+                                        <td>One physical interface per VLAN</td>
+                                        <td>✅ Simple<br>❌ Wastes router ports</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section id="my-topology">
+                        <h2>My Lab Topology</h2>
+                        <p>One switch, one router, two VLANs with one computer each. The switch trunk connects to the router's FastEthernet interface.</p>
+
+                        <h3>Network Diagram</h3>
+                        <div class="callout callout-info">
+                            <div class="callout-icon"><i class="fas fa-sitemap"></i></div>
+                            <div class="callout-content">
+                                <strong>Topology:</strong>
+                                <ul style="margin: 0.5rem 0 0 0;">
+                                    <li>Computer A (VLAN 10) → Switch Fa0/2</li>
+                                    <li>Computer B (VLAN 20) → Switch Fa0/3</li>
+                                    <li>Switch Fa0/1 (Trunk) → Router Fa0/0</li>
+                                    <li>Router has sub-interfaces: Fa0/0.10 and Fa0/0.20</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <h3>Device Configuration Summary</h3>
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Device</th>
+                                        <th>Interface/VLAN</th>
+                                        <th>IP Address</th>
+                                        <th>Subnet Mask</th>
+                                        <th>Default Gateway</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Computer A</strong></td>
+                                        <td>VLAN 10</td>
+                                        <td>192.168.10.1</td>
+                                        <td>255.255.255.0</td>
+                                        <td>192.168.10.254</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Computer B</strong></td>
+                                        <td>VLAN 20</td>
+                                        <td>192.168.20.1</td>
+                                        <td>255.255.255.0</td>
+                                        <td>192.168.20.254</td>
+                                    </tr>
+                                    <tr>
+                                        <td rowspan="2"><strong>Router A</strong></td>
+                                        <td>Fa0/0.10</td>
+                                        <td>192.168.10.254</td>
+                                        <td>255.255.255.0</td>
+                                        <td>—</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Fa0/0.20</td>
+                                        <td>192.168.20.254</td>
+                                        <td>255.255.255.0</td>
+                                        <td>—</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3>Switch Port Assignments</h3>
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Interface</th>
+                                        <th>Mode</th>
+                                        <th>Connected To</th>
+                                        <th>VLANs Allowed</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Fa0/1</td>
+                                        <td>Trunk</td>
+                                        <td>Router A Fa0/0</td>
+                                        <td>10, 20</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Fa0/2</td>
+                                        <td>Access (VLAN 10)</td>
+                                        <td>Computer A</td>
+                                        <td>10 only</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Fa0/3</td>
+                                        <td>Access (VLAN 20)</td>
+                                        <td>Computer B</td>
+                                        <td>20 only</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section id="configuration">
+                        <h2>Configuration Steps</h2>
+
+                        <h3>Step 1 — Configure Switch A</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">Cisco IOS — Switch A</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-bash">enable
+configure terminal
+
+! Create VLANs
+vlan 10
+ name Sales
+ exit
+vlan 20
+ name Engineering
+ exit
+
+! Configure trunk port to router
+interface fastethernet0/1
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20
+ no shutdown
+ exit
+
+! Configure access port for Computer A (VLAN 10)
+interface fastethernet0/2
+ switchport mode access
+ switchport access vlan 10
+ no shutdown
+ exit
+
+! Configure access port for Computer B (VLAN 20)
+interface fastethernet0/3
+ switchport mode access
+ switchport access vlan 20
+ no shutdown
+ exit
+
+! Save configuration
+end
+write memory
+
+! Verify configuration
+show vlan brief
+show interfaces trunk
+show interfaces fastethernet0/1 switchport</code></pre>
+                        </div>
+
+                        <div class="callout callout-info">
+                            <div class="callout-icon"><i class="fas fa-info-circle"></i></div>
+                            <div class="callout-content">
+                                <strong>Trunk Encapsulation:</strong> The command <code class="inline-code">switchport trunk encapsulation dot1q</code> is required on some switches (like Catalyst 3560) before setting trunk mode. It tells the switch to use 802.1Q tagging.
+                            </div>
+                        </div>
+
+                        <h3>Step 2 — Configure Router A (Router on a Stick)</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">Cisco IOS — Router A</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-bash">enable
+configure terminal
+
+! Create sub-interface for VLAN 10
+interface fastethernet0/0.10
+ encapsulation dot1q 10
+ ip address 192.168.10.254 255.255.255.0
+ no shutdown
+ exit
+
+! Create sub-interface for VLAN 20
+interface fastethernet0/0.20
+ encapsulation dot1q 20
+ ip address 192.168.20.254 255.255.255.0
+ no shutdown
+ exit
+
+! Enable the physical interface
+interface fastethernet0/0
+ no shutdown
+ exit
+
+! Save configuration
+end
+write memory
+
+! Verify configuration
+show ip interface brief
+show ip route
+show interfaces fastethernet0/0.10
+show interfaces fastethernet0/0.20</code></pre>
+                        </div>
+
+                        <div class="callout callout-warning">
+                            <div class="callout-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                            <div class="callout-content">
+                                <strong>Important:</strong> You must enable the physical interface (<code class="inline-code">interface fa0/0</code> → <code class="inline-code">no shutdown</code>) or the sub-interfaces won't work, even if they're configured correctly.
+                            </div>
+                        </div>
+
+                        <h3>Step 3 — Configure End Devices</h3>
+
+                        <h4>Computer A (VLAN 10)</h4>
+                        <div class="settings-table">
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>IP Address</strong></td>
+                                        <td>192.168.10.1</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Subnet Mask</strong></td>
+                                        <td>255.255.255.0</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Default Gateway</strong></td>
+                                        <td>192.168.10.254</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h4>Computer B (VLAN 20)</h4>
+                        <div class="settings-table">
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>IP Address</strong></td>
+                                        <td>192.168.20.1</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Subnet Mask</strong></td>
+                                        <td>255.255.255.0</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Default Gateway</strong></td>
+                                        <td>192.168.20.254</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3>Step 4 — Testing Connectivity</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">From Computer A</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-bash">! Ping default gateway (should work)
+ping 192.168.10.254
+
+! Ping Computer B in different VLAN (should work via router)
+ping 192.168.20.1
+
+! Trace route to see path
+tracert 192.168.20.1</code></pre>
+                        </div>
+
+                        <div class="callout callout-success">
+                            <div class="callout-icon"><i class="fas fa-check-circle"></i></div>
+                            <div class="callout-content">
+                                After configuration, I pinged from Computer A (192.168.10.1) to Computer B (192.168.20.1) and it worked! The <code class="inline-code">tracert</code> showed the packet going through 192.168.10.254 (the router) first, proving inter-VLAN routing was working.
+                            </div>
+                        </div>
+
+                        <h3>Verification Commands</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">Switch Verification</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-bash">! Show all VLANs
+show vlan brief
+
+! Show trunk ports and which VLANs are allowed
+show interfaces trunk
+
+! Show detailed trunk information
+show interfaces fa0/1 switchport
+
+! Show which ports are in which VLAN
+show vlan id 10
+show vlan id 20</code></pre>
+                        </div>
+
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">Router Verification</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-bash">! Show all interfaces and their IPs
+show ip interface brief
+
+! Show routing table (should show connected routes)
+show ip route
+
+! Show specific sub-interface details
+show interfaces fa0/0.10
+
+! Verify encapsulation type
+show interfaces fa0/0 | include encapsulation</code></pre>
+                        </div>
+                    </section>
+
+                    <section id="key-takeaways">
+                        <h2>Key Takeaways</h2>
+
+                        <div class="feature-box">
+                            <h4><i class="fas fa-key"></i> What I Understood</h4>
+                            <ul>
+                                <li>VLANs are Layer 2 constructs — they can't route traffic by themselves</li>
+                                <li>Router sub-interfaces act as default gateways for each VLAN</li>
+                                <li>The trunk port carries tagged traffic for multiple VLANs using 802.1Q</li>
+                                <li>Access ports are untagged — devices don't know they're on a VLAN</li>
+                                <li>You must enable the physical interface for sub-interfaces to work</li>
+                                <li>Each sub-interface needs <code class="inline-code">encapsulation dot1q [vlan-id]</code></li>
+                                <li>Without inter-VLAN routing, VLAN 10 and VLAN 20 can't communicate</li>
+                            </ul>
+                        </div>
+
+                        <h3>Common Mistakes I Made</h3>
+                        <div class="callout callout-warning">
+                            <div class="callout-icon"><i class="fas fa-tools"></i></div>
+                            <div class="callout-content">
+                                <ul style="margin: 0.5rem 0 0 0;">
+                                    <li><strong>Forgot to enable Fa0/0:</strong> Sub-interfaces were configured but didn't work until I did <code class="inline-code">no shutdown</code> on the physical interface</li>
+                                    <li><strong>Wrong VLAN on trunk:</strong> Initially forgot to add VLAN 20 to allowed VLANs on trunk — Computer B couldn't reach the router</li>
+                                    <li><strong>Mismatched encapsulation:</strong> Put dot1q 10 on the wrong sub-interface — took me a while to figure out why VLAN 10 had VLAN 20's IP range</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <h3>When to Use Router on a Stick</h3>
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Good For</th>
+                                        <th>Not Good For</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Small networks (2-5 VLANs)</td>
+                                        <td>Large enterprise networks</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Budget-conscious setups</td>
+                                        <td>High-traffic environments</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Lab/learning environments</td>
+                                        <td>When Layer 3 switch is available</td>
+                                    </tr>
+                                    <tr>
+                                        <td>When you have limited router ports</td>
+                                        <td>Networks requiring redundancy</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <!-- Related Posts -->
+                    <div class="related-posts">
+                        <h3>Related Posts</h3>
+                        <div class="related-grid">
+                            <a href="ripv2-configuration.html" class="related-card">
+                                <div class="related-category ccna">Networking</div>
+                                <h4>RIP v2 Configuration</h4>
+                                <p>Distance-vector routing with VLSM support...</p>
+                            </a>
+                            <a href="static-nat.html" class="related-card">
+                                <div class="related-category ccna">Networking</div>
+                                <h4>Static NAT Configuration</h4>
+                                <p>One-to-one NAT mappings across routers...</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h4>About</h4>
+                    <p>Documenting my journey through network security and system administration.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="../all-posts.html">All Posts</a></li>
+                        <li><a href="../index.html#about">About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Categories</h4>
+                    <ul>
+                        <li><a href="../windows-server.html">Windows Server</a></li>
+                        <li><a href="../networking.html">Networking</a></li>
+                        <li><a href="../cybersecurity-101.html">Cybersecurity</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Connect</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ThreatLens. All rights reserved.</p>
+                <button class="back-to-top" id="backToTop">
+                    <i class="fas fa-chevron-up"></i>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="../js/script.js"></script>
+    <script src="../js/post-script.js"></script>
+</body>
+</html>

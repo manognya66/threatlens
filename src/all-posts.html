@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>All Posts | ThreatLens</title>
-    <link rel="stylesheet" href="../src/css/styles.css">
-    <link rel="stylesheet" href="../src/css/post-styles.css">
-    <link rel="shortcut icon" href="../src/logos/logo.svg" type="image/x-icon">
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/post-styles.css">
+    <link rel="shortcut icon" href="../logos/logo.svg" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <style>
@@ -38,7 +38,7 @@
     <nav class="navbar" id="navbar">
         <div class="container nav-container">
             <div class="nav-brand">
-                <img src="../src/logos/logo.svg" alt="ThreatLens Logo" style="width: 35px; height: 35px;">
+                <img src="../logos/logo.svg" alt="ThreatLens Logo" style="width: 35px; height: 35px;">
                 <span>ThreatLens</span>
             </div>
             <button class="nav-toggle" id="navToggle">
@@ -349,7 +349,7 @@
                 </article>
 
                 <!-- Routed Port -->
-                <!-- <article class="post-card" data-category="networking">
+                <article class="post-card" data-category="networking" data-tags="routed port layer 3 switch no switchport inter-vlan routing svi multilayer" data-title="Routed Port Configuration — Layer 3 Switching">
                     <div class="post-category networking">Networking</div>
                     <div class="post-content">
                         <div class="post-date">
@@ -360,13 +360,14 @@
                         <div class="post-tags">
                             <span class="tag">Routed Port</span>
                             <span class="tag">Layer 3 Switch</span>
+                            <span class="tag">Inter-VLAN</span>
                         </div>
                         <a href="./networking/routed-port-configuration.html" class="post-read-more">Read More <i class="fas fa-arrow-right"></i></a>
                     </div>
                 </article>
 
-                DHCP Configuration
-                <article class="post-card" data-category="networking">
+                <!-- DHCP Configuration -->
+                <article class="post-card" data-category="networking" data-tags="dhcp dynamic ip address pool default-router excluded-address vlan automatic assignment lease binding" data-title="DHCP Configuration on Switch — Dynamic IP Assignment">
                     <div class="post-category networking">Networking</div>
                     <div class="post-content">
                         <div class="post-date">
@@ -381,7 +382,25 @@
                         </div>
                         <a href="./networking/dhcp-switch-configuration.html" class="post-read-more">Read More <i class="fas fa-arrow-right"></i></a>
                     </div>
-                </article> -->
+                </article>
+
+                <!-- RODC Deployment -->
+                <article class="post-card" data-category="windows-server" data-tags="rodc read-only domain controller password replication policy branch office active directory security prp credential caching unidirectional replication" data-title="RODC Deployment — Read-Only Domain Controller">
+                    <div class="post-category" style="background: rgba(99,102,241,0.15); color: #818cf8; border: 1px solid rgba(99,102,241,0.3);">Windows Server</div>
+                    <div class="post-content">
+                        <div class="post-date">
+                            <i class="fas fa-calendar"></i> February 20, 2026
+                        </div>
+                        <h3 class="post-title">RODC Deployment — Read-Only Domain Controller</h3>
+                        <p class="post-excerpt">Deploying Read-Only Domain Controllers for branch offices, configuring Password Replication Policy, securing credentials in untrusted locations...</p>
+                        <div class="post-tags">
+                            <span class="tag">RODC</span>
+                            <span class="tag">Active Directory</span>
+                            <span class="tag">Branch Office</span>
+                        </div>
+                        <a href="./windows-server/rodc-deployment.html" class="post-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
             </div>
 
             <!-- No Results Message -->
@@ -438,8 +457,8 @@
         </div>
     </footer>
 
-    <script src="../src/js/script.js"></script>
-    <script src="../src/js/post-script.js"></script>
-    <script src="../src/js/search.js"></script>
+    <script src="../js/script.js"></script>
+    <script src="../js/post-script.js"></script>
+    <script src="../js/search.js"></script>
 </body>
 </html>

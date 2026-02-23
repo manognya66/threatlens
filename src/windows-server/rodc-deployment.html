@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RODC Deployment — Read-Only Domain Controller | ThreatLens</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/post-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <div class="nav-brand">
+                <img src="../logo.svg" alt="ThreatLens Logo" style="width: 35px; height: 35px;">
+                <span>ThreatLens</span>
+            </div>
+            <button class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="../index.html#learning-paths" class="nav-link">Learning Paths</a></li>
+                <li><a href="../all-posts.html" class="nav-link active">All Posts</a></li>
+                <li><a href="../index.html#about" class="nav-link">About</a></li>
+            </ul>
+            <div class="nav-search" onclick="window.location.href='../all-posts.html'" style="cursor: pointer;">
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Post Header -->
+    <article class="post-article">
+        <div class="post-header">
+            <div class="container">
+                <div class="breadcrumb">
+                    <a href="../index.html"><i class="fas fa-home"></i> Home</a>
+                    <span>/</span>
+                    <a href="../windows-server.html">Windows Server</a>
+                    <span>/</span>
+                    <span>RODC</span>
+                </div>
+                <div class="post-category-badge windows-server">Windows Server</div>
+                <h1 class="post-main-title">RODC Deployment — Read-Only Domain Controller</h1>
+                <div class="post-meta-info">
+                    <div class="meta-item">
+                        <i class="fas fa-calendar"></i>
+                        <span>February 20, 2026</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-clock"></i>
+                        <span>12 min read</span>
+                    </div>
+                </div>
+                <div class="post-tags-header">
+                    <span class="tag">RODC</span>
+                    <span class="tag">Active Directory</span>
+                    <span class="tag">Read-Only</span>
+                    <span class="tag">Branch Office</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Post Content -->
+        <div class="post-body">
+            <div class="container post-container">
+                <!-- Table of Contents Sidebar -->
+                <aside class="post-sidebar">
+                    <div class="toc-wrapper">
+                        <h3 class="toc-title">Table of Contents</h3>
+                        <nav class="toc">
+                            <ul>
+                                <li><a href="#what-i-learned" class="toc-link active">What I Learned</a></li>
+                                <li><a href="#what-is-rodc" class="toc-link">What is RODC</a></li>
+                                <li><a href="#my-setup" class="toc-link">My Lab Setup</a></li>
+                                <li><a href="#deployment" class="toc-link">Deployment</a></li>
+                                <li><a href="#key-takeaways" class="toc-link">Key Takeaways</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="share-section">
+                        <h4>Share This Post</h4>
+                        <div class="share-buttons">
+                            <a href="#" class="share-btn linkedin"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="share-btn reddit"><i class="fab fa-reddit"></i></a>
+                            <a href="#" class="share-btn link"><i class="fas fa-link"></i></a>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Main Content -->
+                <div class="post-content-main">
+
+                    <section id="what-i-learned">
+                        <h2>What I Learned</h2>
+                        <p>I deployed a Read-Only Domain Controller (RODC) for a simulated branch office scenario. The key insight: RODCs provide authentication services without storing writable copies of Active Directory data, making them perfect for locations with less physical security.</p>
+                        <p>Users could still log in and authenticate through the RODC, but password changes and other write operations were referred back to the writable DC at headquarters. This hybrid approach balances convenience with security.</p>
+                    </section>
+
+                    <section id="what-is-rodc">
+                        <h2>What is RODC?</h2>
+                        <p><strong>RODC (Read-Only Domain Controller)</strong> is a special type of domain controller that hosts a read-only copy of the Active Directory database. Introduced in Windows Server 2008, it's designed for branch offices or locations where physical security cannot be guaranteed.</p>
+
+                        <h3>RODC vs Writable DC</h3>
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Feature</th>
+                                        <th>Writable DC</th>
+                                        <th>RODC</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>AD Database</strong></td>
+                                        <td>Read/Write</td>
+                                        <td>Read-Only</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Password Changes</strong></td>
+                                        <td>Accepts locally</td>
+                                        <td>Refers to writable DC</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Password Caching</strong></td>
+                                        <td>All passwords</td>
+                                        <td>Selective (Password Replication Policy)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Replication</strong></td>
+                                        <td>Bidirectional</td>
+                                        <td>One-way inbound only</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>FSMO Roles</strong></td>
+                                        <td>Can hold roles</td>
+                                        <td>Cannot hold any FSMO roles</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Use Case</strong></td>
+                                        <td>Headquarters, data centers</td>
+                                        <td>Branch offices, remote sites</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3>Why Use RODC?</h3>
+                        <div class="callout callout-info">
+                            <div class="callout-icon"><i class="fas fa-shield-alt"></i></div>
+                            <div class="callout-content">
+                                <strong>Security Benefits:</strong>
+                                <ul style="margin: 0.5rem 0 0 0;">
+                                    <li>If RODC is stolen, attackers get read-only data (no passwords by default)</li>
+                                    <li>Password Replication Policy controls which passwords are cached</li>
+                                    <li>Credential theft attack surface is minimized</li>
+                                    <li>Less risk in locations with poor physical security</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <h3>RODC Key Features</h3>
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Feature</th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Read-Only AD Database</strong></td>
+                                        <td>Local changes not allowed; replication is one-way inbound</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Password Replication Policy (PRP)</strong></td>
+                                        <td>Controls which user passwords are cached on RODC</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Credential Caching</strong></td>
+                                        <td>Caches only approved credentials for faster authentication</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Administrator Role Separation</strong></td>
+                                        <td>Delegate local admin without Domain Admin rights</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Read-Only DNS</strong></td>
+                                        <td>DNS zones are also read-only on RODC</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Unidirectional Replication</strong></td>
+                                        <td>RODC never replicates changes back to writable DCs</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section id="my-setup">
+                        <h2>My Lab Setup</h2>
+                        <p>One writable DC at "headquarters" and one RODC deployed as a branch office domain controller. Both in the threatlens.local domain.</p>
+
+                        <h3>Environment Details</h3>
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Server</th>
+                                        <th>Role</th>
+                                        <th>IP Address</th>
+                                        <th>Location</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>DC1</strong></td>
+                                        <td>Writable DC</td>
+                                        <td>192.168.1.10</td>
+                                        <td>Headquarters</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>RODC1</strong></td>
+                                        <td>Read-Only DC</td>
+                                        <td>192.168.1.20</td>
+                                        <td>Branch Office</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3>Prerequisites</h3>
+                        <div class="callout callout-warning">
+                            <div class="callout-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                            <div class="callout-content">
+                                <strong>Requirements Before Deploying RODC:</strong>
+                                <ul style="margin: 0.5rem 0 0 0;">
+                                    <li>Forest functional level: Windows Server 2003 or higher</li>
+                                    <li>At least one writable Windows Server 2008+ DC in the domain</li>
+                                    <li><code class="inline-code">adprep /rodcprep</code> run on schema master (if upgrading from 2003)</li>
+                                    <li>DNS properly configured</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="deployment">
+                        <h2>RODC Deployment Steps</h2>
+
+                        <h3>Step 1 — Install AD DS Role on RODC1</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">PowerShell — RODC1</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-powershell"># Install AD Domain Services role
+Install-WindowsFeature AD-Domain-Services -IncludeManagementTools
+
+# Verify installation
+Get-WindowsFeature AD-Domain-Services</code></pre>
+                        </div>
+
+                        <h3>Step 2 — Configure DNS to Point to Writable DC</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">PowerShell — RODC1</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-powershell"># Set DNS to writable DC
+Set-DnsClientServerAddress -InterfaceAlias "Ethernet" -ServerAddresses 192.168.1.10
+
+# Verify DNS
+Get-DnsClientServerAddress</code></pre>
+                        </div>
+
+                        <h3>Step 3 — Promote Server to RODC</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">PowerShell — RODC1</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-powershell">Import-Module ADDSDeployment
+
+# Promote to RODC
+Install-ADDSDomainController `
+    -DomainName "threatlens.local" `
+    -Credential (Get-Credential "THREATLENS\Administrator") `
+    -ReadOnlyReplica:$true `
+    -SiteName "Default-First-Site-Name" `
+    -InstallDns:$true `
+    -SafeModeAdministratorPassword (ConvertTo-SecureString "P@ssw0rd123" -AsPlainText -Force) `
+    -Force:$true
+
+# Server will reboot after promotion</code></pre>
+                        </div>
+
+                        <div class="callout callout-info">
+                            <div class="callout-icon"><i class="fas fa-info-circle"></i></div>
+                            <div class="callout-content">
+                                <strong>Key Parameter:</strong> <code class="inline-code">-ReadOnlyReplica:$true</code> is what makes this an RODC instead of a regular writable DC.
+                            </div>
+                        </div>
+
+                        <h3>Step 4 — Configure Password Replication Policy</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">PowerShell — DC1 (Writable DC)</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-powershell"># Allow a specific user's password to be cached on RODC
+Add-ADDomainControllerPasswordReplicationPolicy -Identity "RODC1" `
+    -AllowedList "THREATLENS\BranchUser1"
+
+# Deny a user's password from being cached
+Add-ADDomainControllerPasswordReplicationPolicy -Identity "RODC1" `
+    -DeniedList "THREATLENS\Administrator"
+
+# View current Password Replication Policy
+Get-ADDomainControllerPasswordReplicationPolicy -Identity "RODC1"</code></pre>
+                        </div>
+
+                        <div class="callout callout-warning">
+                            <div class="callout-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                            <div class="callout-content">
+                                <strong>Important:</strong> By default, NO passwords are cached on RODC. You must explicitly allow users via Password Replication Policy. Never allow administrative accounts (Domain Admins, Enterprise Admins) to cache on RODC.
+                            </div>
+                        </div>
+
+                        <h3>Step 5 — Delegate RODC Administration (Optional)</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">PowerShell — DC1</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-powershell"># Create a group for branch office admins
+New-ADGroup -Name "Branch Office Admins" `
+    -GroupScope Global `
+    -GroupCategory Security `
+    -Path "OU=Groups,DC=threatlens,DC=local"
+
+# Delegate administration of RODC to this group
+# (Done through Active Directory Users and Computers GUI)
+# Properties of RODC → Managed By tab</code></pre>
+                        </div>
+
+                        <h3>Step 6 — Verify RODC Deployment</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">PowerShell — RODC1</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-powershell"># Verify RODC status
+Get-ADDomainController -Identity "RODC1"
+
+# Check if it's read-only
+Get-ADDomainController -Identity "RODC1" | Select-Object IsReadOnly
+
+# View replication status
+repadmin /showrepl
+
+# Check DNS zones (should be read-only)
+Get-DnsServerZone</code></pre>
+                        </div>
+
+                        <h3>Step 7 — Test Authentication Through RODC</h3>
+                        <div class="step-by-step">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h4>Join Client to Domain</h4>
+                                    <p>Join a client computer to the domain and ensure its DNS points to RODC1 (192.168.1.20)</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h4>Login as Branch User</h4>
+                                    <p>Login as a user whose password is allowed in PRP. First login will be slow (authenticates to writable DC), subsequent logins faster (cached credential).</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h4>Check Cached Credentials</h4>
+                                    <p>On RODC1, run: <code class="inline-code">Get-ADDomainControllerPasswordReplicationPolicy -Identity RODC1 -RevealedList</code></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="callout callout-success">
+                            <div class="callout-icon"><i class="fas fa-check-circle"></i></div>
+                            <div class="callout-content">
+                                After deployment, I verified that users could authenticate through the RODC. Password changes attempted on the RODC client were automatically redirected to the writable DC at headquarters!
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="key-takeaways">
+                        <h2>Key Takeaways</h2>
+
+                        <div class="feature-box">
+                            <h4><i class="fas fa-key"></i> What I Understood</h4>
+                            <ul>
+                                <li>RODCs provide authentication without writable AD database</li>
+                                <li>Password Replication Policy controls which passwords are cached</li>
+                                <li><code class="inline-code">-ReadOnlyReplica:$true</code> parameter makes it an RODC</li>
+                                <li>Replication is one-way: writable DC → RODC only</li>
+                                <li>RODC cannot hold any FSMO roles</li>
+                                <li>By default, NO passwords are cached (must be explicitly allowed)</li>
+                                <li>Perfect for branch offices with less physical security</li>
+                            </ul>
+                        </div>
+
+                        <h3>When to Use RODC</h3>
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Use RODC</th>
+                                        <th>Use Writable DC</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Branch offices with poor physical security</td>
+                                        <td>Headquarters, secure data centers</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Remote locations with untrusted admins</td>
+                                        <td>Locations with trusted IT staff</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Places where DC theft is a risk</td>
+                                        <td>Secure server rooms</td>
+                                    </tr>
+                                    <tr>
+                                        <td>DMZ or perimeter networks</td>
+                                        <td>Internal corporate networks</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3>Password Replication Policy Best Practices</h3>
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Best Practice</th>
+                                        <th>Reason</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Never cache admin accounts</td>
+                                        <td>Protects privileged credentials if RODC stolen</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Only cache local branch users</td>
+                                        <td>Minimize credential exposure</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Use groups for PRP</td>
+                                        <td>Easier management than individual users</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Review revealed credentials regularly</td>
+                                        <td>Audit which passwords are cached</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3>Common Mistakes</h3>
+                        <div class="callout callout-warning">
+                            <div class="callout-icon"><i class="fas fa-tools"></i></div>
+                            <div class="callout-content">
+                                <ul style="margin: 0.5rem 0 0 0;">
+                                    <li><strong>Forgot PRP configuration:</strong> Users couldn't authenticate after WAN link failure because no passwords were cached</li>
+                                    <li><strong>Cached admin passwords:</strong> Accidentally allowed Domain Admin in PRP — major security risk</li>
+                                    <li><strong>Wrong forest functional level:</strong> RODC requires minimum Windows Server 2003 forest level</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Related Posts -->
+                    <div class="related-posts">
+                        <h3>Related Posts</h3>
+                        <div class="related-grid">
+                            <a href="adc-fsmo-roles.html" class="related-card">
+                                <div class="related-category windows-server">Windows Server</div>
+                                <h4>Additional DC & FSMO Roles</h4>
+                                <p>Promoting domain controllers and transferring FSMO roles...</p>
+                            </a>
+                            <a href="active-directory-user-profiles.html" class="related-card">
+                                <div class="related-category windows-server">Windows Server</div>
+                                <h4>Active Directory User Profiles</h4>
+                                <p>Creating and managing domain users...</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h4>About</h4>
+                    <p>Documenting my journey through network security and system administration.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="../all-posts.html">All Posts</a></li>
+                        <li><a href="../index.html#about">About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Categories</h4>
+                    <ul>
+                        <li><a href="../windows-server.html">Windows Server</a></li>
+                        <li><a href="../networking.html">Networking</a></li>
+                        <li><a href="../cybersecurity-101.html">Cybersecurity</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Connect</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ThreatLens. All rights reserved.</p>
+                <button class="back-to-top" id="backToTop">
+                    <i class="fas fa-chevron-up"></i>
+                </button>
+            </div>
+        </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="../js/script.js"></script>
+    <script src="../js/post-script.js"></script>
+</body>
+</html>

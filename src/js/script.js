@@ -306,11 +306,11 @@ tags.forEach(tag => {
 // ============================================================
 (function updatePostCounts() {
     const categories = {
-        'networking':     { count: 'count-networking',     badge: 'badge-networking'     },
-        'windows-server': { count: 'count-windows-server', badge: 'badge-windows-server' },
-        'web':            { count: 'count-web',            badge: 'badge-web'            },
-        'presec':         { count: 'count-presec',         badge: 'badge-presec'         },
-        'pentest':        { count: 'count-pentest',        badge: 'badge-pentest'        },
+        'networking':     { badge: 'badge-networking'     },
+        'windows-server': { badge: 'badge-windows-server' },
+        'web':            { badge: 'badge-web'            },
+        'presec':         { badge: 'badge-presec'         },
+        'pentest':        { badge: 'badge-pentest'        },
     };
 
     // Tally each category
@@ -320,12 +320,9 @@ tags.forEach(tag => {
         if (cat in totals) totals[cat]++;
     });
 
-    // Push numbers and badge text into the track cards
+    // Update badge text based on post count
     Object.entries(categories).forEach(([cat, ids]) => {
         const n = totals[cat];
-
-        const countEl = document.getElementById(ids.count);
-        if (countEl) countEl.querySelector('.count-number').textContent = n;
 
         const badgeEl = document.getElementById(ids.badge);
         if (!badgeEl) return;

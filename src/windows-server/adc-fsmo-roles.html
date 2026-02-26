@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Additional Domain Controller and FSMO Roles Transfer | ThreatLens</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/post-styles.css">
+    <link rel="shortcut icon" href="../src/logos/logo.svg" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <div class="nav-brand">
+                <img src="../logos/logo.svg" alt="ThreatLens Logo" style="width: 35px; height: 35px;">
+                <span>ThreatLens</span>
+            </div>
+            <button class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="../index.html#learning-paths" class="nav-link">Learning Paths</a></li>
+                <li><a href="../all-posts.html" class="nav-link active">All Posts</a></li>
+                <li><a href="../index.html#about" class="nav-link">About</a></li>
+            </ul>
+            <div class="nav-search" onclick="window.location.href='../all-posts.html'" style="cursor: pointer;">
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Post Header -->
+    <article class="post-article">
+        <div class="post-header">
+            <div class="container">
+                <div class="breadcrumb">
+                    <a href="../index.html"><i class="fas fa-home"></i> Home</a>
+                    <span>/</span>
+                    <a href="../windows-server.html">Windows Server</a>
+                    <span>/</span>
+                    <span>ADC & FSMO Roles</span>
+                </div>
+                <div class="post-category-badge windows-server">Windows Server</div>
+                <h1 class="post-main-title">Additional Domain Controller and FSMO Roles Transfer</h1>
+                <div class="post-meta-info">
+                    <div class="meta-item">
+                        <i class="fas fa-calendar"></i>
+                        <span>February 17, 2026</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-clock"></i>
+                        <span>15 min read</span>
+                    </div>
+                </div>
+                <div class="post-tags-header">
+                    <span class="tag">Active Directory</span>
+                    <span class="tag">Domain Controller</span>
+                    <span class="tag">FSMO Roles</span>
+                    <span class="tag">Redundancy</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Post Content -->
+        <div class="post-body">
+            <div class="container post-container">
+                <!-- Table of Contents Sidebar -->
+                <aside class="post-sidebar">
+                    <div class="toc-wrapper">
+                        <h3 class="toc-title">Table of Contents</h3>
+                        <nav class="toc">
+                            <ul>
+                                <li><a href="#what-i-learned" class="toc-link active">What I Learned</a></li>
+                                <li><a href="#what-is-adc-fsmo" class="toc-link">What is ADC & FSMO</a></li>
+                                <li><a href="#my-setup" class="toc-link">My Lab Setup</a></li>
+                                <li><a href="#configuration" class="toc-link">Configuration</a></li>
+                                <li><a href="#key-takeaways" class="toc-link">Key Takeaways</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="share-section">
+                        <h4>Share This Post</h4>
+                        <div class="share-buttons">
+                            <a href="#" class="share-btn linkedin"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="share-btn reddit"><i class="fab fa-reddit"></i></a>
+                            <a href="#" class="share-btn link"><i class="fas fa-link"></i></a>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Main Content -->
+                <div class="post-content-main">
+
+                    <section id="what-i-learned">
+                        <h2>What I Learned</h2>
+                        <p>I promoted a second Windows Server to become an Additional Domain Controller (ADC) in my existing domain, then transferred all five FSMO roles from the original DC to the new one. The biggest insight: redundancy in Active Directory isn't just about backups — it's about having multiple domain controllers sharing the workload and providing failover.</p>
+                        <p>Transferring FSMO roles felt critical. These five roles control specific domain-wide and forest-wide operations. If the server holding them goes down, certain AD operations stop working. Spreading them across DCs or consciously placing them improves resilience.</p>
+                    </section>
+
+                    <section id="what-is-adc-fsmo">
+                        <h2>What is ADC and FSMO?</h2>
+
+                        <h3>Additional Domain Controller (ADC)</h3>
+                        <p><strong>Additional Domain Controller (ADC)</strong> is any domain controller added after the first one. ADCs replicate Active Directory data from existing DCs, providing redundancy, load balancing, and fault tolerance.</p>
+
+                        <div class="callout callout-info">
+                            <div class="callout-icon"><i class="fas fa-server"></i></div>
+                            <div class="callout-content">
+                                <strong>Why Add an ADC?</strong>
+                                <ul style="margin: 0.5rem 0 0 0;">
+                                    <li>Redundancy — If one DC fails, the other continues serving authentication</li>
+                                    <li>Load balancing — Multiple DCs handle login requests</li>
+                                    <li>Geographical distribution — Place DCs in different office locations</li>
+                                    <li>Faster response — Clients authenticate to nearest DC</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <h3>FSMO Roles (Flexible Single Master Operations)</h3>
+                        <p><strong>FSMO roles</strong> are five special roles in Active Directory that handle operations that cannot tolerate multiple simultaneous updates. Only one DC can hold each role at a time.</p>
+
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>FSMO Role</th>
+                                        <th>Scope</th>
+                                        <th>What It Does</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Schema Master</strong></td>
+                                        <td>Forest-wide</td>
+                                        <td>Controls all schema changes (adding attributes, classes)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Domain Naming Master</strong></td>
+                                        <td>Forest-wide</td>
+                                        <td>Controls adding/removing domains from the forest</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>RID Master</strong></td>
+                                        <td>Domain-wide</td>
+                                        <td>Allocates pools of RIDs (Relative IDs) to DCs for creating objects</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>PDC Emulator</strong></td>
+                                        <td>Domain-wide</td>
+                                        <td>Time synchronization, password changes, Group Policy, legacy support</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Infrastructure Master</strong></td>
+                                        <td>Domain-wide</td>
+                                        <td>Updates cross-domain group memberships</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3>Forest-wide vs Domain-wide Roles</h3>
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Role Type</th>
+                                        <th>Roles</th>
+                                        <th>Unique Per</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Forest-wide</strong></td>
+                                        <td>Schema Master, Domain Naming Master</td>
+                                        <td>One per entire forest</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Domain-wide</strong></td>
+                                        <td>RID Master, PDC Emulator, Infrastructure Master</td>
+                                        <td>One per domain</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="callout callout-warning">
+                            <div class="callout-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                            <div class="callout-content">
+                                <strong>Important:</strong> By default, the first DC in a forest holds all five FSMO roles. If that DC fails and you can't recover it, you'll need to seize the roles (forcefully take them) from another DC.
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="my-setup">
+                        <h2>My Lab Setup</h2>
+                        <p>Two Windows Server 2019 machines: DC1 (original domain controller) and DC2 (will become ADC). Both in the same domain: threatlens.local.</p>
+
+                        <h3>Environment Details</h3>
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Server</th>
+                                        <th>Hostname</th>
+                                        <th>IP Address</th>
+                                        <th>Role</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>DC1</strong></td>
+                                        <td>Server-DC1</td>
+                                        <td>192.168.1.10</td>
+                                        <td>First DC (holds all FSMO roles initially)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>DC2</strong></td>
+                                        <td>Server-DC2</td>
+                                        <td>192.168.1.11</td>
+                                        <td>Additional DC (will receive FSMO roles)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3>Domain Information</h3>
+                        <div class="settings-table">
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Domain Name</strong></td>
+                                        <td>threatlens.local</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Forest Functional Level</strong></td>
+                                        <td>Windows Server 2016</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Domain Functional Level</strong></td>
+                                        <td>Windows Server 2016</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section id="configuration">
+                        <h2>Configuration Steps</h2>
+
+                        <h3>Part 1 — Promote DC2 to Additional Domain Controller</h3>
+
+                        <h4>Step 1: Install AD DS Role on DC2</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">PowerShell — DC2</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-powershell"># Install Active Directory Domain Services role
+Install-WindowsFeature AD-Domain-Services -IncludeManagementTools
+
+# Verify installation
+Get-WindowsFeature AD-Domain-Services</code></pre>
+                        </div>
+
+                        <div class="callout callout-info">
+                            <div class="callout-icon"><i class="fas fa-info-circle"></i></div>
+                            <div class="callout-content">
+                                <strong>Alternative:</strong> You can also install AD DS through Server Manager → Add Roles and Features → Active Directory Domain Services.
+                            </div>
+                        </div>
+
+                        <h4>Step 2: Configure DNS Settings on DC2</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">PowerShell — DC2</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-powershell"># Set DNS to point to existing DC (DC1)
+Set-DnsClientServerAddress -InterfaceAlias "Ethernet" -ServerAddresses 192.168.1.10
+
+# Verify DNS configuration
+Get-DnsClientServerAddress -InterfaceAlias "Ethernet"</code></pre>
+                        </div>
+
+                        <h4>Step 3: Promote DC2 to Additional Domain Controller</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">PowerShell — DC2</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-powershell"># Promote to domain controller
+Import-Module ADDSDeployment
+
+Install-ADDSDomainController `
+    -DomainName "threatlens.local" `
+    -Credential (Get-Credential "THREATLENS\Administrator") `
+    -InstallDns:$true `
+    -SafeModeAdministratorPassword (ConvertTo-SecureString "P@ssw0rd123" -AsPlainText -Force) `
+    -Force:$true
+
+# Server will automatically reboot after promotion</code></pre>
+                        </div>
+
+                        <div class="callout callout-success">
+                            <div class="callout-icon"><i class="fas fa-check-circle"></i></div>
+                            <div class="callout-content">
+                                After the reboot, I logged into DC2 and ran <code class="inline-code">Get-ADDomainController</code> — it showed both DC1 and DC2 as domain controllers. Replication was working!
+                            </div>
+                        </div>
+
+                        <h4>Step 4: Verify Replication</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">PowerShell — DC2</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-powershell"># Check replication status
+repadmin /showrepl
+
+# Check all domain controllers in domain
+Get-ADDomainController -Filter *
+
+# Force replication from DC1
+repadmin /syncall /AdeP</code></pre>
+                        </div>
+
+                        <h3>Part 2 — Transfer FSMO Roles to DC2</h3>
+
+                        <h4>Step 1: Check Current FSMO Role Holders</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">PowerShell — Any DC</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-powershell"># View all FSMO role holders
+Get-ADDomain | Select-Object InfrastructureMaster, RIDMaster, PDCEmulator
+Get-ADForest | Select-Object DomainNamingMaster, SchemaMaster
+
+# Or use netdom
+netdom query fsmo</code></pre>
+                        </div>
+
+                        <h4>Step 2: Transfer All FSMO Roles to DC2</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">PowerShell — DC2</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-powershell"># Transfer all five FSMO roles to DC2
+Move-ADDirectoryServerOperationMasterRole -Identity "Server-DC2" `
+    -OperationMasterRole SchemaMaster, DomainNamingMaster, PDCEmulator, RIDMaster, InfrastructureMaster `
+    -Confirm:$false</code></pre>
+                        </div>
+
+                        <div class="callout callout-warning">
+                            <div class="callout-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                            <div class="callout-content">
+                                <strong>Warning:</strong> This command transfers ALL roles at once. In production, you might want to transfer them individually to verify each transfer.
+                            </div>
+                        </div>
+
+                        <h4>Step 3: Transfer FSMO Roles Individually (Alternative Method)</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">PowerShell — DC2</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-powershell"># Transfer each role individually
+Move-ADDirectoryServerOperationMasterRole -Identity "Server-DC2" -OperationMasterRole SchemaMaster
+Move-ADDirectoryServerOperationMasterRole -Identity "Server-DC2" -OperationMasterRole DomainNamingMaster
+Move-ADDirectoryServerOperationMasterRole -Identity "Server-DC2" -OperationMasterRole PDCEmulator
+Move-ADDirectoryServerOperationMasterRole -Identity "Server-DC2" -OperationMasterRole RIDMaster
+Move-ADDirectoryServerOperationMasterRole -Identity "Server-DC2" -OperationMasterRole InfrastructureMaster</code></pre>
+                        </div>
+
+                        <h4>Step 4: Verify FSMO Role Transfer</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">PowerShell — DC2</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-powershell"># Verify all roles are now on DC2
+netdom query fsmo
+
+# Alternative verification
+Get-ADDomain | Select-Object InfrastructureMaster, RIDMaster, PDCEmulator
+Get-ADForest | Select-Object DomainNamingMaster, SchemaMaster</code></pre>
+                        </div>
+
+                        <h3>Using GUI Method (Active Directory Users and Computers)</h3>
+                        <div class="step-by-step">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h4>Transfer RID, PDC, and Infrastructure Master</h4>
+                                    <p>Open Active Directory Users and Computers → Right-click domain → Operations Masters → Transfer each role individually</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h4>Transfer Schema Master</h4>
+                                    <p>Register schmmgmt.dll: <code class="inline-code">regsvr32 schmmgmt.dll</code> → Open MMC → Add Snap-in → Active Directory Schema → Right-click root → Change Schema Master</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h4>Transfer Domain Naming Master</h4>
+                                    <p>Open Active Directory Domains and Trusts → Right-click root → Operations Master → Change</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3>Seize FSMO Roles (If Original DC Failed)</h3>
+                        <div class="callout callout-warning">
+                            <div class="callout-icon"><i class="fas fa-skull-crossbones"></i></div>
+                            <div class="callout-content">
+                                <strong>Emergency Only:</strong> Use seizure only if the original DC is permanently offline and cannot be recovered. Never bring the old DC back online after seizing roles.
+                            </div>
+                        </div>
+
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">PowerShell — Seize Roles</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-powershell"># Seize all FSMO roles (EMERGENCY ONLY)
+Move-ADDirectoryServerOperationMasterRole -Identity "Server-DC2" `
+    -OperationMasterRole SchemaMaster, DomainNamingMaster, PDCEmulator, RIDMaster, InfrastructureMaster `
+    -Force</code></pre>
+                        </div>
+                    </section>
+
+                    <section id="key-takeaways">
+                        <h2>Key Takeaways</h2>
+
+                        <div class="feature-box">
+                            <h4><i class="fas fa-key"></i> What I Understood</h4>
+                            <ul>
+                                <li>ADCs provide redundancy and load balancing for Active Directory</li>
+                                <li>DC2 must point its DNS to DC1 before promotion</li>
+                                <li>Replication happens automatically after ADC promotion</li>
+                                <li>All five FSMO roles default to the first DC in a forest</li>
+                                <li>PDC Emulator is the most critical role (time sync, password changes)</li>
+                                <li>Transfer = graceful (original DC online), Seize = forceful (original DC dead)</li>
+                                <li><code class="inline-code">netdom query fsmo</code> shows current role holders</li>
+                            </ul>
+                        </div>
+
+                        <h3>FSMO Roles — What Breaks If They're Down</h3>
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Role</th>
+                                        <th>Impact If Offline</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Schema Master</strong></td>
+                                        <td>Cannot modify AD schema (rare operation)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Domain Naming Master</strong></td>
+                                        <td>Cannot add/remove domains from forest</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>RID Master</strong></td>
+                                        <td>Cannot create new objects after RID pool exhaustion</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>PDC Emulator</strong></td>
+                                        <td>Password changes delayed, time sync issues, GPO problems</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Infrastructure Master</strong></td>
+                                        <td>Cross-domain group memberships not updated</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3>Best Practices for FSMO Roles</h3>
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Practice</th>
+                                        <th>Reason</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Keep PDC Emulator on most powerful DC</td>
+                                        <td>Handles most workload (time, passwords, GPO)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Don't put all roles on one DC in production</td>
+                                        <td>Single point of failure</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Document current role holders</td>
+                                        <td>Easier disaster recovery</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Never seize unless DC is permanently dead</td>
+                                        <td>Creates conflicts if old DC comes back</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3>Common Mistakes</h3>
+                        <div class="callout callout-warning">
+                            <div class="callout-icon"><i class="fas fa-tools"></i></div>
+                            <div class="callout-content">
+                                <ul style="margin: 0.5rem 0 0 0;">
+                                    <li><strong>Didn't set DNS on DC2:</strong> Promotion failed because DC2 couldn't find DC1 — always point DNS to existing DC first</li>
+                                    <li><strong>Transferred roles before replication completed:</strong> Got errors — wait for replication to finish before transferring FSMO roles</li>
+                                    <li><strong>Used -Force without understanding:</strong> Almost seized roles when I should have transferred them — seizure is only for emergencies</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Related Posts -->
+                    <div class="related-posts">
+                        <h3>Related Posts</h3>
+                        <div class="related-grid">
+                            <a href="active-directory-user-profiles.html" class="related-card">
+                                <div class="related-category windows-server">Windows Server</div>
+                                <h4>Active Directory User Profiles</h4>
+                                <p>Creating and managing domain user accounts...</p>
+                            </a>
+                            <a href="group-policy-ou.html" class="related-card">
+                                <div class="related-category windows-server">Windows Server</div>
+                                <h4>Group Policy in an OU</h4>
+                                <p>Creating and linking GPOs to enforce settings...</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h4>About</h4>
+                    <p>Documenting my journey through network security and system administration.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="../all-posts.html">All Posts</a></li>
+                        <li><a href="../index.html#about">About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Categories</h4>
+                    <ul>
+                        <li><a href="../windows-server.html">Windows Server</a></li>
+                        <li><a href="../networking.html">Networking</a></li>
+                        <li><a href="../cybersecurity-101.html">Cybersecurity</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Connect</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ThreatLens. All rights reserved.</p>
+                <button class="back-to-top" id="backToTop">
+                    <i class="fas fa-chevron-up"></i>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="../js/script.js"></script>
+    <script src="../js/post-script.js"></script>
+</body>
+</html>

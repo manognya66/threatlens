@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IIS and FTP Role Configuration in Domain Network | ThreatLens</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/post-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <div class="nav-brand">
+                <img src="../logos/logo.svg" alt="ThreatLens Logo" style="width: 35px; height: 35px;">
+                <span>ThreatLens</span>
+            </div>
+            <button class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="../index.html#learning-paths" class="nav-link">Learning Paths</a></li>
+                <li><a href="../all-posts.html" class="nav-link active">All Posts</a></li>
+                <li><a href="../index.html#about" class="nav-link">About</a></li>
+            </ul>
+            <div class="nav-search" onclick="window.location.href='../all-posts.html'" style="cursor: pointer;">
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Post Header -->
+    <article class="post-article">
+        <div class="post-header">
+            <div class="container">
+                <div class="breadcrumb">
+                    <a href="../index.html"><i class="fas fa-home"></i> Home</a>
+                    <span>/</span>
+                    <a href="../windows-server.html">Windows Server</a>
+                    <span>/</span>
+                    <span>IIS and FTP Configuration</span>
+                </div>
+                <div class="post-category-badge" style="background: rgba(99,102,241,0.15); color: #818cf8; border: 1px solid rgba(99,102,241,0.3);">Windows Server</div>
+                <h1 class="post-main-title">IIS and FTP Role Configuration in Domain Network</h1>
+                <div class="post-meta-info">
+                    <div class="meta-item">
+                        <i class="fas fa-calendar"></i>
+                        <span>February 11, 2026</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-clock"></i>
+                        <span>12 min read</span>
+                    </div>
+                </div>
+                <div class="post-tags-header">
+                    <span class="tag">IIS</span>
+                    <span class="tag">FTP Server</span>
+                    <span class="tag">Web Server</span>
+                    <span class="tag">Windows Server</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Post Content -->
+        <div class="post-body">
+            <div class="container post-container">
+                <!-- Table of Contents Sidebar -->
+                <aside class="post-sidebar">
+                    <div class="toc-wrapper">
+                        <h3 class="toc-title">Table of Contents</h3>
+                        <nav class="toc">
+                            <ul>
+                                <li><a href="#what-i-learned" class="toc-link active">What I Learned</a></li>
+                                <li><a href="#what-is-iis-ftp" class="toc-link">What is IIS & FTP</a></li>
+                                <li><a href="#my-lab-setup" class="toc-link">My Lab Setup</a></li>
+                                <li><a href="#configuration" class="toc-link">Configuration Steps</a></li>
+                                <li><a href="#key-takeaways" class="toc-link">Key Takeaways</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="share-section">
+                        <h4>Share This Post</h4>
+                        <div class="share-buttons">
+                            <a href="#" class="share-btn linkedin"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="share-btn reddit"><i class="fab fa-reddit"></i></a>
+                            <a href="#" class="share-btn link"><i class="fas fa-link"></i></a>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Main Content -->
+                <div class="post-content-main">
+
+                    <section id="what-i-learned">
+                        <h2>What I Learned</h2>
+                        <p>I set up a web server (IIS) and an FTP server on Windows Server in a domain network. The biggest realization: IIS isn't just for hosting websites — it can also serve FTP sites, and both can authenticate users from Active Directory.</p>
+                        <p>Configuring FTP with domain authentication took some trial and error, especially figuring out the difference between Basic Authentication (passwords sent in plaintext) and Windows Authentication (domain credentials).</p>
+                    </section>
+
+                    <section id="what-is-iis-ftp">
+                        <h2>What is IIS & FTP?</h2>
+                        
+                        <h3>IIS (Internet Information Services)</h3>
+                        <p><strong>IIS</strong> is Microsoft's web server software. It hosts websites, web applications, and APIs on Windows Server. You can run static HTML sites, ASP.NET apps, or even PHP applications.</p>
+
+                        <h3>FTP (File Transfer Protocol)</h3>
+                        <p><strong>FTP</strong> is a protocol for transferring files between computers over a network. An FTP server lets users upload and download files remotely — useful for sharing documents, backups, or deploying website files.</p>
+
+                        <div class="callout callout-info">
+                            <div class="callout-icon"><i class="fas fa-network-wired"></i></div>
+                            <div class="callout-content">
+                                IIS can host both HTTP (web) and FTP sites on the same server. In a domain network, both can use Active Directory for user authentication.
+                            </div>
+                        </div>
+
+                        <h3>Key Concepts</h3>
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Term</th>
+                                        <th>What It Means</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Default Website</strong></td>
+                                        <td>The default site created when IIS is installed (runs on port 80)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Application Pool</strong></td>
+                                        <td>Isolated process that runs web applications (crashes don't affect other sites)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>FTP Site</strong></td>
+                                        <td>A folder accessible via FTP protocol (usually on port 21)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Virtual Directory</strong></td>
+                                        <td>A folder from another location that appears inside a website</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Bindings</strong></td>
+                                        <td>IP address, port, and hostname a site listens on</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Basic Auth</strong></td>
+                                        <td>Username/password sent in plaintext (not secure without SSL)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Windows Auth</strong></td>
+                                        <td>Uses domain credentials (encrypted, more secure)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3>Authentication Types</h3>
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Type</th>
+                                        <th>How It Works</th>
+                                        <th>Security</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Anonymous</strong></td>
+                                        <td>Anyone can access without login</td>
+                                        <td>No security</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Basic</strong></td>
+                                        <td>Username/password in plaintext</td>
+                                        <td>Low (use with SSL only)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Windows</strong></td>
+                                        <td>Domain credentials (NTLM/Kerberos)</td>
+                                        <td>High (encrypted)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section id="my-lab-setup">
+                        <h2>My Lab Setup</h2>
+                        <p>Same two-machine lab from the Active Directory setup. The Domain Controller now also runs IIS and FTP.</p>
+
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Machine</th>
+                                        <th>OS</th>
+                                        <th>Role</th>
+                                        <th>IP Address</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Server-1</td>
+                                        <td>Windows Server 2019</td>
+                                        <td>DC + IIS + FTP</td>
+                                        <td>192.168.1.1</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Client-1</td>
+                                        <td>Windows 10</td>
+                                        <td>Domain Member</td>
+                                        <td>192.168.1.10</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="callout callout-info">
+                            <div class="callout-icon"><i class="fas fa-bullseye"></i></div>
+                            <div class="callout-content">
+                                <strong>What I was trying to achieve:</strong>
+                                <ul style="margin: 0.5rem 0 0 0;">
+                                    <li>Install IIS and host a simple HTML website</li>
+                                    <li>Install FTP server on the same machine</li>
+                                    <li>Allow domain users to authenticate and upload files via FTP</li>
+                                    <li>Test access from the client machine</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="configuration">
+                        <h2>Configuration Steps</h2>
+
+                        <!-- Part 1: IIS -->
+                        <h3>Part 1 — Installing IIS (Web Server)</h3>
+
+                        <div class="step-by-step">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h4>Open Server Manager</h4>
+                                    <p>Click <strong>Start → Server Manager</strong></p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h4>Add IIS Role</h4>
+                                    <p><strong>Manage → Add Roles and Features → Role-based installation</strong> → Select your server → Check <strong>Web Server (IIS)</strong> → Add Features → Next → Install</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h4>Verify Installation</h4>
+                                    <p>Open a browser on the server → Navigate to <code class="inline-code">http://localhost</code> → You should see the IIS default welcome page</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3>Part 2 — Creating a Simple Website</h3>
+
+                        <div class="step-by-step">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h4>Create a Folder for the Website</h4>
+                                    <p>Create <code class="inline-code">C:\inetpub\mywebsite</code> → Inside, create a file called <code class="inline-code">index.html</code></p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h4>Add Simple HTML Content</h4>
+                                    <p>Open <code class="inline-code">index.html</code> in Notepad and paste:</p>
+                                    <div class="code-block" style="margin-top: 0.5rem;">
+                                        <div class="code-header">
+                                            <span class="code-language">HTML</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">
+                                                <i class="fas fa-copy"></i> Copy
+                                            </button>
+                                        </div>
+                                        <pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+    &lt;title&gt;ThreatLens Test Site&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;h1&gt;Welcome to ThreatLens!&lt;/h1&gt;
+    &lt;p&gt;This website is hosted on IIS in a domain network.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h4>Open IIS Manager</h4>
+                                    <p><strong>Start → Administrative Tools → Internet Information Services (IIS) Manager</strong></p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <h4>Stop Default Website</h4>
+                                    <p>Expand the server node → Expand <strong>Sites</strong> → Right-click <strong>Default Web Site</strong> → <strong>Stop</strong></p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">5</div>
+                                <div class="step-content">
+                                    <h4>Create a New Site</h4>
+                                    <p>Right-click <strong>Sites</strong> → <strong>Add Website</strong></p>
+                                    <ul style="margin: 0.5rem 0 0 0;">
+                                        <li><strong>Site name:</strong> ThreatLens</li>
+                                        <li><strong>Physical path:</strong> C:\inetpub\mywebsite</li>
+                                        <li><strong>Port:</strong> 80</li>
+                                    </ul>
+                                    <p style="margin-top: 0.5rem;">Click <strong>OK</strong></p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">6</div>
+                                <div class="step-content">
+                                    <h4>Test the Website</h4>
+                                    <p>From the client machine, open a browser → Navigate to <code class="inline-code">http://192.168.1.1</code> → You should see your HTML page</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="callout callout-success">
+                            <div class="callout-icon"><i class="fas fa-check-circle"></i></div>
+                            <div class="callout-content">
+                                When I browsed to the server's IP from the client, my custom HTML page loaded perfectly. IIS is now serving a website accessible across the domain network.
+                            </div>
+                        </div>
+
+                        <!-- Part 3: FTP -->
+                        <h3>Part 3 — Installing FTP Server</h3>
+
+                        <div class="step-by-step">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h4>Add FTP Feature to IIS</h4>
+                                    <p><strong>Server Manager → Add Roles and Features → Web Server (IIS)</strong> → Click <strong>Next</strong> until you reach <strong>Role Services</strong> → Expand <strong>FTP Server</strong> → Check <strong>FTP Service</strong> and <strong>FTP Extensibility</strong> → Install</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h4>Create FTP Root Folder</h4>
+                                    <p>Create a folder: <code class="inline-code">C:\FTPRoot</code> → Inside, create a subfolder: <code class="inline-code">Uploads</code></p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h4>Set NTFS Permissions</h4>
+                                    <p>Right-click <code class="inline-code">C:\FTPRoot</code> → <strong>Properties → Security → Edit</strong> → Add <strong>Domain Users</strong> → Grant <strong>Modify</strong> permissions → OK</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3>Part 4 — Creating an FTP Site</h3>
+
+                        <div class="step-by-step">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h4>Open IIS Manager</h4>
+                                    <p>Expand the server node → Right-click <strong>Sites</strong> → <strong>Add FTP Site</strong></p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h4>FTP Site Information</h4>
+                                    <p><strong>FTP site name:</strong> ThreatLens FTP<br>
+                                    <strong>Physical path:</strong> C:\FTPRoot<br>
+                                    Click <strong>Next</strong></p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h4>Binding and SSL Settings</h4>
+                                    <p><strong>IP Address:</strong> All Unassigned<br>
+                                    <strong>Port:</strong> 21<br>
+                                    <strong>SSL:</strong> No SSL<br>
+                                    Click <strong>Next</strong></p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">4</div>
+                                <div class="step-content">
+                                    <h4>Authentication and Authorization</h4>
+                                    <p><strong>Authentication:</strong> Check <strong>Basic</strong><br>
+                                    <strong>Allow access to:</strong> Specified users<br>
+                                    <strong>User:</strong> <code class="inline-code">Domain Users</code> (or specific user like <code class="inline-code">threatlens\jdoe</code>)<br>
+                                    <strong>Permissions:</strong> Check both <strong>Read</strong> and <strong>Write</strong><br>
+                                    Click <strong>Finish</strong></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="callout callout-warning">
+                            <div class="callout-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                            <div class="callout-content">
+                                <strong>Important:</strong> Basic Authentication sends passwords in plaintext. For production, use SSL (FTPS) or switch to Windows Authentication. I used Basic here for simplicity in the lab.
+                            </div>
+                        </div>
+
+                        <h3>Part 5 — Configure Windows Firewall for FTP</h3>
+
+                        <div class="step-by-step">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h4>Open Firewall Settings</h4>
+                                    <p><strong>Control Panel → Windows Defender Firewall → Advanced Settings</strong></p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h4>Allow FTP Traffic</h4>
+                                    <p>Click <strong>Inbound Rules → New Rule</strong> → <strong>Port → TCP → Specific local ports: 21</strong> → Allow the connection → Apply to all profiles → Name it <strong>FTP Server</strong> → Finish</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3>Part 6 — Testing FTP from the Client</h3>
+
+                        <div class="step-by-step">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h4>Test with Windows Explorer</h4>
+                                    <p>On Client-1, open <strong>File Explorer</strong> → In the address bar, type: <code class="inline-code">ftp://192.168.1.1</code> → Press Enter</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h4>Log In</h4>
+                                    <p>Enter domain credentials:<br>
+                                    <strong>Username:</strong> <code class="inline-code">threatlens\jdoe</code><br>
+                                    <strong>Password:</strong> [the user's password]</p>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h4>Upload a Test File</h4>
+                                    <p>Create a text file on your desktop → Drag it into the FTP folder in File Explorer → Verify it appears in <code class="inline-code">C:\FTPRoot</code> on the server</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="callout callout-success">
+                            <div class="callout-icon"><i class="fas fa-check-circle"></i></div>
+                            <div class="callout-content">
+                                After logging in with my domain account, I was able to browse the FTP directory and upload files. The FTP server is now fully functional and integrated with Active Directory.
+                            </div>
+                        </div>
+
+                        <h3>Verification Commands</h3>
+
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">Command Prompt — Client</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-bash">! Test FTP connection
+ftp 192.168.1.1
+
+! Inside FTP prompt:
+! Login: threatlens\jdoe
+! Password: [password]
+
+! List files
+dir
+
+! Upload a file
+put C:\test.txt
+
+! Exit
+quit</code></pre>
+                        </div>
+
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">PowerShell — Server</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-bash"># Check IIS is running
+Get-Service W3SVC
+
+# Check FTP service is running
+Get-Service FTPSVC
+
+# List all IIS sites
+Get-IISSite
+
+# List all FTP sites
+Get-WebConfiguration -Filter '/system.applicationHost/sites/site' | Where-Object {$_.ftpServer -ne $null}</code></pre>
+                        </div>
+                    </section>
+
+                    <section id="key-takeaways">
+                        <h2>Key Takeaways</h2>
+
+                        <div class="feature-box">
+                            <h4><i class="fas fa-key"></i> What I Understood</h4>
+                            <ul>
+                                <li>IIS can host both websites (HTTP) and FTP sites on the same server</li>
+                                <li>FTP with <strong>Basic Authentication</strong> uses domain credentials but sends passwords in plaintext</li>
+                                <li>For production, always use SSL (FTPS) or Windows Authentication for security</li>
+                                <li><strong>NTFS permissions</strong> control who can read/write files on the server</li>
+                                <li><strong>FTP authorization rules</strong> control who can connect to the FTP site</li>
+                                <li>Firewall must allow TCP port 21 for FTP to work</li>
+                                <li>Domain users can authenticate to both IIS and FTP using their AD accounts</li>
+                            </ul>
+                        </div>
+
+                        <h3>IIS vs FTP — When to Use What</h3>
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Use Case</th>
+                                        <th>Use IIS (HTTP/HTTPS)</th>
+                                        <th>Use FTP</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Host a website</td>
+                                        <td>✅ Yes</td>
+                                        <td>❌ No</td>
+                                    </tr>
+                                    <tr>
+                                        <td>File sharing/transfers</td>
+                                        <td>Possible but not ideal</td>
+                                        <td>✅ Yes</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Large file uploads</td>
+                                        <td>Limited by web server config</td>
+                                        <td>✅ Yes</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Public access</td>
+                                        <td>✅ Yes</td>
+                                        <td>Use with caution</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Internal file repository</td>
+                                        <td>❌ No</td>
+                                        <td>✅ Yes</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <!-- Related Posts -->
+                    <div class="related-posts">
+                        <h3>Related Posts</h3>
+                        <div class="related-grid">
+                            <a href="group-policy-ou.html" class="related-card">
+                                <div class="related-category windows-server">Windows Server</div>
+                                <h4>Applying Group Policy in an OU</h4>
+                                <p>Creating and linking GPOs to enforce settings...</p>
+                            </a>
+                            <a href="active-directory-user-profiles.html" class="related-card">
+                                <div class="related-category windows-server">Windows Server</div>
+                                <h4>Active Directory User Profiles</h4>
+                                <p>Creating and managing domain user accounts...</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h4>About</h4>
+                    <p>Documenting my journey through network security and system administration.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="../all-posts.html">All Posts</a></li>
+                        <li><a href="../index.html#about">About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Categories</h4>
+                    <ul>
+                        <li><a href="../windows-server.html">Windows Server</a></li>
+                        <li><a href="../networking.html">Networking</a></li>
+                        <li><a href="../cybersecurity-101.html">Cybersecurity</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Connect</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ThreatLens. All rights reserved.</p>
+                <button class="back-to-top" id="backToTop">
+                    <i class="fas fa-chevron-up"></i>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="../js/script.js"></script>
+    <script src="../js/post-script.js"></script>
+</body>
+</html>

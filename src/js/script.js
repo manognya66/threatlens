@@ -56,25 +56,27 @@ const sections = document.querySelectorAll('section[id]');
 
 function highlightNavLink() {
     const scrollY = window.pageYOffset;
-
-    if (sections.length === 0) return;
-
-    // Find the section currently in view (last one whose top is above the fold)
-    let currentSection = sections[0];
-    sections.forEach(section => {
-        if (scrollY >= section.offsetTop - 120) {
-            currentSection = section;
-        }
-    });
-
-    const sectionId = currentSection.getAttribute('id');
-    navLinks.forEach(link => {
-        link.classList.remove('active');
-        const href = link.getAttribute('href');
-        if (href === `#${sectionId}` || href === `./index.html#${sectionId}` || href.endsWith(`#${sectionId}`)) {
-            link.classList.add('active');
-        }
-    });
+    
+    // If we have sections on the page, highlight based on scroll position
+    if (sections.length > 0) {
+        sections.forEach(section => {
+            const sectionHeight = section.offsetHeight;
+            const sectionTop = section.offsetTop - 100;
+            const sectionId = section.getAttribute('id');
+            
+            if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    const href = link.getAttribute('href');
+                    
+                    // Check if link points to this section (handle both #id and ./index.html#id)
+                    if (href === `#${sectionId}` || href === `./index.html#${sectionId}` || href.endsWith(`#${sectionId}`)) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        });
+    }
 }
 
 // Highlight nav based on current page on load
@@ -208,19 +210,15 @@ if (footerText) {
 // ========================
 // Search Functionality
 // ========================
-// Define initSearch globally so the inline onclick in HTML works
-window.initSearch = function() {
-    window.location.href = 'all-posts.html';
-};
-
 const searchIcon = document.querySelector('.nav-search');
-if (searchIcon) {
+if (searchIcon && !searchIcon.onclick) {
+    // Only add if onclick not already set (to avoid conflict with inline onclick)
     searchIcon.style.cursor = 'pointer';
-    // Remove inline onclick and attach proper listener
-    searchIcon.removeAttribute('onclick');
-    searchIcon.addEventListener('click', () => {
-        window.location.href = 'all-posts.html';
-    });
+    if (!searchIcon.getAttribute('onclick')) {
+        searchIcon.addEventListener('click', () => {
+            window.location.href = 'all-posts.html';
+        });
+    }
 }
 
 // ========================
@@ -308,11 +306,11 @@ tags.forEach(tag => {
 // ============================================================
 (function updatePostCounts() {
     const categories = {
-        'networking':     { badge: 'badge-networking'     },
-        'windows-server': { badge: 'badge-windows-server' },
-        'web':            { badge: 'badge-web'            },
-        'presec':         { badge: 'badge-presec'         },
-        'pentest':        { badge: 'badge-pentest'        },
+        'networking':     { count: 'count-networking',     badge: 'badge-networking'     },
+        'windows-server': { count: 'count-windows-server', badge: 'badge-windows-server' },
+        'web':            { count: 'count-web',            badge: 'badge-web'            },
+        'presec':         { count: 'count-presec',         badge: 'badge-presec'         },
+        'pentest':        { count: 'count-pentest',        badge: 'badge-pentest'        },
     };
 
     // Tally each category
@@ -322,9 +320,12 @@ tags.forEach(tag => {
         if (cat in totals) totals[cat]++;
     });
 
-    // Update badge text based on post count
+    // Push numbers and badge text into the track cards
     Object.entries(categories).forEach(([cat, ids]) => {
         const n = totals[cat];
+
+        const countEl = document.getElementById(ids.count);
+        if (countEl) countEl.querySelector('.count-number').textContent = n;
 
         const badgeEl = document.getElementById(ids.badge);
         if (!badgeEl) return;

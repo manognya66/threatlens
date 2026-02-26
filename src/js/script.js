@@ -56,27 +56,25 @@ const sections = document.querySelectorAll('section[id]');
 
 function highlightNavLink() {
     const scrollY = window.pageYOffset;
-    
-    // If we have sections on the page, highlight based on scroll position
-    if (sections.length > 0) {
-        sections.forEach(section => {
-            const sectionHeight = section.offsetHeight;
-            const sectionTop = section.offsetTop - 100;
-            const sectionId = section.getAttribute('id');
-            
-            if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
-                navLinks.forEach(link => {
-                    link.classList.remove('active');
-                    const href = link.getAttribute('href');
-                    
-                    // Check if link points to this section (handle both #id and ./index.html#id)
-                    if (href === `#${sectionId}` || href === `./index.html#${sectionId}` || href.endsWith(`#${sectionId}`)) {
-                        link.classList.add('active');
-                    }
-                });
-            }
-        });
-    }
+
+    if (sections.length === 0) return;
+
+    // Find the section currently in view (last one whose top is above the fold)
+    let currentSection = sections[0];
+    sections.forEach(section => {
+        if (scrollY >= section.offsetTop - 120) {
+            currentSection = section;
+        }
+    });
+
+    const sectionId = currentSection.getAttribute('id');
+    navLinks.forEach(link => {
+        link.classList.remove('active');
+        const href = link.getAttribute('href');
+        if (href === `#${sectionId}` || href === `./index.html#${sectionId}` || href.endsWith(`#${sectionId}`)) {
+            link.classList.add('active');
+        }
+    });
 }
 
 // Highlight nav based on current page on load
@@ -210,15 +208,19 @@ if (footerText) {
 // ========================
 // Search Functionality
 // ========================
+// Define initSearch globally so the inline onclick in HTML works
+window.initSearch = function() {
+    window.location.href = 'all-posts.html';
+};
+
 const searchIcon = document.querySelector('.nav-search');
-if (searchIcon && !searchIcon.onclick) {
-    // Only add if onclick not already set (to avoid conflict with inline onclick)
+if (searchIcon) {
     searchIcon.style.cursor = 'pointer';
-    if (!searchIcon.getAttribute('onclick')) {
-        searchIcon.addEventListener('click', () => {
-            window.location.href = 'all-posts.html';
-        });
-    }
+    // Remove inline onclick and attach proper listener
+    searchIcon.removeAttribute('onclick');
+    searchIcon.addEventListener('click', () => {
+        window.location.href = 'all-posts.html';
+    });
 }
 
 // ========================

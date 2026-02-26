@@ -2,62 +2,49 @@
 // Table of Contents Active Link
 // ========================
 const tocLinks = document.querySelectorAll('.toc-link');
-const sections = document.querySelectorAll('.post-content-main section[id]');
+const tocSections = document.querySelectorAll('.post-content-main section[id]');
 
-function updateActiveTocLink() {
-    // Get current scroll position with offset for fixed header
-    const scrollPosition = window.scrollY + 200;
-    
-    let currentSectionId = '';
-    
-    // Find which section we're currently viewing
-    // Loop through sections in reverse to get the current one
-    for (let i = sections.length - 1; i >= 0; i--) {
-        const section = sections[i];
-        const sectionTop = section.offsetTop;
-        
-        if (scrollPosition >= sectionTop) {
-            currentSectionId = section.getAttribute('id');
-            break;
-        }
-    }
-    
-    // If we're at the very top, use the first section
-    if (!currentSectionId && sections.length > 0) {
-        currentSectionId = sections[0].getAttribute('id');
-    }
-    
-    // Update active class on TOC links
+function setActiveTocLink(id) {
     tocLinks.forEach(link => {
-        link.classList.remove('active');
-        const href = link.getAttribute('href');
-        
-        if (href === `#${currentSectionId}`) {
-            link.classList.add('active');
-        }
+        link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
     });
 }
 
-// Throttled scroll handler for better performance
-let scrollTimeout;
+function updateActiveTocLink() {
+    if (!tocSections.length || !tocLinks.length) return;
+
+    // Use getBoundingClientRect() — always accurate, never stale.
+    // A section is "current" when its top edge has crossed into the upper
+    // 40% of the viewport. We walk all sections and keep the last one that
+    // has passed that threshold.
+    const threshold = window.innerHeight * 0.4;
+    let activeId = tocSections[0].getAttribute('id'); // default: first section
+
+    tocSections.forEach(section => {
+        const rect = section.getBoundingClientRect();
+        if (rect.top <= threshold) {
+            activeId = section.getAttribute('id');
+        }
+    });
+
+    setActiveTocLink(activeId);
+}
+
+// Use requestAnimationFrame for smooth, flicker-free updates
+let rafPending = false;
 window.addEventListener('scroll', () => {
-    if (scrollTimeout) {
-        clearTimeout(scrollTimeout);
+    if (!rafPending) {
+        rafPending = true;
+        requestAnimationFrame(() => {
+            updateActiveTocLink();
+            rafPending = false;
+        });
     }
-    scrollTimeout = setTimeout(updateActiveTocLink, 50);
 }, { passive: true });
 
-// Initialize on page load
-window.addEventListener('DOMContentLoaded', () => {
-    console.log('TOC: Sections found:', sections.length);
-    console.log('TOC: Links found:', tocLinks.length);
-    setTimeout(updateActiveTocLink, 100);
-});
-
-// Also update after everything loads
-window.addEventListener('load', () => {
-    setTimeout(updateActiveTocLink, 200);
-});
+// Run after DOM and after full load (fonts/images can shift layout)
+document.addEventListener('DOMContentLoaded', () => setTimeout(updateActiveTocLink, 100));
+window.addEventListener('load', () => setTimeout(updateActiveTocLink, 200));
 
 // ========================
 // Code Copy Functionality

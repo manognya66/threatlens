@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VLAN Configuration Lab — Basic VLAN Setup | ThreatLens</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/post-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <div class="nav-brand">
+                <img src="../logo.svg" alt="ThreatLens Logo" style="width: 35px; height: 35px;">
+                <span>ThreatLens</span>
+            </div>
+            <button class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="../index.html#learning-paths" class="nav-link">Learning Paths</a></li>
+                <li><a href="../all-posts.html" class="nav-link active">All Posts</a></li>
+                <li><a href="../index.html#about" class="nav-link">About</a></li>
+            </ul>
+            <div class="nav-search" onclick="window.location.href='../all-posts.html'" style="cursor: pointer;">
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Post Header -->
+    <article class="post-article">
+        <div class="post-header">
+            <div class="container">
+                <div class="breadcrumb">
+                    <a href="../index.html"><i class="fas fa-home"></i> Home</a>
+                    <span>/</span>
+                    <a href="../networking.html">Networking</a>
+                    <span>/</span>
+                    <span>Basic VLAN Configuration</span>
+                </div>
+                <div class="post-category-badge ccna">Networking</div>
+                <h1 class="post-main-title">VLAN Configuration Lab — Basic VLAN Setup</h1>
+                <div class="post-meta-info">
+                    <div class="meta-item">
+                        <i class="fas fa-calendar"></i>
+                        <span>February 15, 2026</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-clock"></i>
+                        <span>7 min read</span>
+                    </div>
+                </div>
+                <div class="post-tags-header">
+                    <span class="tag">VLAN</span>
+                    <span class="tag">Access Port</span>
+                    <span class="tag">Switch Configuration</span>
+                    <span class="tag">Layer 2</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Post Content -->
+        <div class="post-body">
+            <div class="container post-container">
+                <!-- Table of Contents Sidebar -->
+                <aside class="post-sidebar">
+                    <div class="toc-wrapper">
+                        <h3 class="toc-title">Table of Contents</h3>
+                        <nav class="toc">
+                            <ul>
+                                <li><a href="#what-i-learned" class="toc-link active">What I Learned</a></li>
+                                <li><a href="#what-is-vlan" class="toc-link">What is a VLAN</a></li>
+                                <li><a href="#my-topology" class="toc-link">My Lab Topology</a></li>
+                                <li><a href="#configuration" class="toc-link">Configuration</a></li>
+                                <li><a href="#key-takeaways" class="toc-link">Key Takeaways</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="share-section">
+                        <h4>Share This Post</h4>
+                        <div class="share-buttons">
+                            <a href="#" class="share-btn linkedin"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="share-btn reddit"><i class="fab fa-reddit"></i></a>
+                            <a href="#" class="share-btn link"><i class="fas fa-link"></i></a>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Main Content -->
+                <div class="post-content-main">
+
+                    <section id="what-i-learned">
+                        <h2>What I Learned</h2>
+                        <p>I created my first VLAN from scratch. Two computers connected to the same switch could ping each other after I assigned both switch ports to VLAN 50. The key insight: VLANs create logical network segments on a physical switch.</p>
+                        <p>Before adding the ports to VLAN 50, the computers couldn't communicate even though they were on the same IP subnet. After the VLAN configuration, they could ping perfectly — same broadcast domain, isolated from other VLANs.</p>
+                    </section>
+
+                    <section id="what-is-vlan">
+                        <h2>What is a VLAN?</h2>
+                        <p><strong>VLAN (Virtual Local Area Network)</strong> is a logical grouping of devices within the same broadcast domain, regardless of their physical location. VLANs segment a network at Layer 2, improving security, performance, and management.</p>
+
+                        <h3>Why Use VLANs?</h3>
+                        <div class="callout callout-info">
+                            <div class="callout-icon"><i class="fas fa-lightbulb"></i></div>
+                            <div class="callout-content">
+                                <strong>The Problem VLANs Solve:</strong> Without VLANs, all devices on a switch are in the same broadcast domain. A broadcast from one device reaches everyone. VLANs create separate broadcast domains, reducing broadcast traffic and improving security.
+                            </div>
+                        </div>
+
+                        <h3>VLAN Benefits</h3>
+                        <ul>
+                            <li><strong>Security:</strong> Isolate sensitive data (Finance VLAN separate from Guest VLAN)</li>
+                            <li><strong>Performance:</strong> Reduce broadcast traffic by limiting broadcast domains</li>
+                            <li><strong>Flexibility:</strong> Group users by department, not physical location</li>
+                            <li><strong>Cost Savings:</strong> No need for separate switches per department</li>
+                        </ul>
+
+                        <h3>Access Port vs Trunk Port</h3>
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Port Type</th>
+                                        <th>Purpose</th>
+                                        <th>VLANs Carried</th>
+                                        <th>VLAN Tagging</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Access Port</strong></td>
+                                        <td>Connect end devices (PCs, printers)</td>
+                                        <td>One VLAN only</td>
+                                        <td>Untagged</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Trunk Port</strong></td>
+                                        <td>Connect switches or routers</td>
+                                        <td>Multiple VLANs</td>
+                                        <td>Tagged (802.1Q)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section id="my-topology">
+                        <h2>My Lab Topology</h2>
+                        <p>Simple setup: one switch, two computers, one VLAN. Both computers connect to Switch A on access ports assigned to VLAN 50.</p>
+
+                        <h3>Network Diagram</h3>
+                        <div class="callout callout-info">
+                            <div class="callout-icon"><i class="fas fa-sitemap"></i></div>
+                            <div class="callout-content">
+                                <strong>Topology:</strong>
+                                <ul style="margin: 0.5rem 0 0 0;">
+                                    <li>Computer A → Switch A Fa0/1</li>
+                                    <li>Computer B → Switch A Fa0/2</li>
+                                    <li>Both ports in VLAN 50</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <h3>Device Configuration</h3>
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Device</th>
+                                        <th>Interface</th>
+                                        <th>IP Address</th>
+                                        <th>Subnet Mask</th>
+                                        <th>VLAN</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Computer A</strong></td>
+                                        <td>NIC</td>
+                                        <td>192.168.1.1</td>
+                                        <td>255.255.255.0 (/24)</td>
+                                        <td>50</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Computer B</strong></td>
+                                        <td>NIC</td>
+                                        <td>192.168.1.2</td>
+                                        <td>255.255.255.0 (/24)</td>
+                                        <td>50</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Switch A</strong></td>
+                                        <td>Fa0/1</td>
+                                        <td>—</td>
+                                        <td>—</td>
+                                        <td>50 (Access)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Switch A</strong></td>
+                                        <td>Fa0/2</td>
+                                        <td>—</td>
+                                        <td>—</td>
+                                        <td>50 (Access)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="callout callout-success">
+                            <div class="callout-icon"><i class="fas fa-check-circle"></i></div>
+                            <div class="callout-content">
+                                <strong>Expected Result:</strong> By default, Computer A and B can't communicate (no VLAN configured). After creating VLAN 50 and assigning both ports to it, they'll ping successfully within the same broadcast domain.
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="configuration">
+                        <h2>Configuration Steps</h2>
+
+                        <h3>Step 1 — Configure Switch A Hostname</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">Cisco IOS — Switch A</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-bash">enable
+configure terminal
+
+! Set switch hostname
+hostname systech
+
+! Exit back to privileged mode
+exit</code></pre>
+                        </div>
+
+                        <h3>Step 2 — Create VLAN 50</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">Create VLAN</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-bash">configure terminal
+
+! Create VLAN 50
+vlan 50
+ name systech
+ exit</code></pre>
+                        </div>
+
+                        <div class="callout callout-info">
+                            <div class="callout-icon"><i class="fas fa-info-circle"></i></div>
+                            <div class="callout-content">
+                                <strong>VLAN Naming:</strong> The <code class="inline-code">name</code> command is optional but recommended. It helps identify the purpose of each VLAN when you run <code class="inline-code">show vlan brief</code>.
+                            </div>
+                        </div>
+
+                        <h3>Step 3 — Assign Ports to VLAN 50</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">Configure Access Ports</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-bash">! Configure Fa0/1 (Computer A)
+interface fastethernet0/1
+ switchport mode access
+ switchport access vlan 50
+ no shutdown
+ exit
+
+! Configure Fa0/2 (Computer B)
+interface fastethernet0/2
+ switchport mode access
+ switchport access vlan 50
+ no shutdown
+ exit
+
+! Save configuration
+end
+write memory</code></pre>
+                        </div>
+
+                        <h3>Step 4 — Verify VLAN Configuration</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">Verification Commands</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-bash">! Show all VLANs
+show vlan
+
+! Show VLAN brief (cleaner output)
+show vlan brief
+
+! Verify specific interface switchport status
+show interface fa0/1 switchport
+show interface fa0/2 switchport</code></pre>
+                        </div>
+
+                        <h3>Understanding show vlan Output</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">Sample Output</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-bash">systech# show vlan brief
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Fa0/3, Fa0/4, Fa0/5, ...
+50   systech                          active    Fa0/1, Fa0/2
+1002 fddi-default                     active
+1003 token-ring-default               active
+1004 fddinet-default                  active
+1005 trnet-default                    active</code></pre>
+                        </div>
+
+                        <div class="callout callout-success">
+                            <div class="callout-icon"><i class="fas fa-check-circle"></i></div>
+                            <div class="callout-content">
+                                I ran <code class="inline-code">show vlan brief</code> and saw VLAN 50 listed with Fa0/1 and Fa0/2 assigned to it. Then I tested connectivity — Computer A could ping Computer B successfully at 192.168.1.2!
+                            </div>
+                        </div>
+
+                        <h3>Step 5 — Test Connectivity</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">From Computer A (Windows CMD)</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-bash">! Ping Computer B
+ping 192.168.1.2
+
+! Expected: Reply from 192.168.1.2
+! This confirms both computers are in the same VLAN</code></pre>
+                        </div>
+
+                        <h3>Optional — Delete VLAN Configuration</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">Cleanup Commands</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-bash">! Delete VLAN database file
+delete flash:vlan.dat
+
+! Erase startup configuration
+erase nvram
+
+! Or delete specific VLAN
+configure terminal
+no vlan 50
+exit</code></pre>
+                        </div>
+
+                        <div class="callout callout-warning">
+                            <div class="callout-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                            <div class="callout-content">
+                                <strong>Warning:</strong> <code class="inline-code">delete flash:vlan.dat</code> removes ALL VLANs (except VLAN 1). Use <code class="inline-code">no vlan 50</code> to remove only VLAN 50.
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="key-takeaways">
+                        <h2>Key Takeaways</h2>
+
+                        <div class="feature-box">
+                            <h4><i class="fas fa-key"></i> What I Understood</h4>
+                            <ul>
+                                <li>VLANs create logical network segments on a physical switch</li>
+                                <li>Access ports carry traffic for only one VLAN (untagged)</li>
+                                <li>Devices in the same VLAN can communicate at Layer 2</li>
+                                <li>Devices in different VLANs cannot communicate without a router</li>
+                                <li>VLAN 1 is the default VLAN — all ports start in VLAN 1</li>
+                                <li><code class="inline-code">switchport mode access</code> makes a port an access port</li>
+                                <li><code class="inline-code">switchport access vlan 50</code> assigns the port to VLAN 50</li>
+                            </ul>
+                        </div>
+
+                        <h3>VLAN Best Practices</h3>
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Practice</th>
+                                        <th>Why</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Don't use VLAN 1</td>
+                                        <td>VLAN 1 is default — security risk</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Name your VLANs</td>
+                                        <td>Easier to identify purpose</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Shutdown unused ports</td>
+                                        <td>Prevents unauthorized access</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Use VLANs for departments</td>
+                                        <td>HR, Finance, IT separated logically</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3>Common Mistakes</h3>
+                        <div class="callout callout-warning">
+                            <div class="callout-icon"><i class="fas fa-tools"></i></div>
+                            <div class="callout-content">
+                                <ul style="margin: 0.5rem 0 0 0;">
+                                    <li><strong>Forgot switchport mode access:</strong> Port stayed in dynamic mode and didn't assign to VLAN properly</li>
+                                    <li><strong>Created VLAN but didn't assign ports:</strong> VLAN existed but no ports were members</li>
+                                    <li><strong>Didn't save config:</strong> Lost VLAN after switch reboot — always <code class="inline-code">write memory</code></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Related Posts -->
+                    <div class="related-posts">
+                        <h3>Related Posts</h3>
+                        <div class="related-grid">
+                            <a href="inter-vlan-routing.html" class="related-card">
+                                <div class="related-category ccna">Networking</div>
+                                <h4>Inter-VLAN Routing</h4>
+                                <p>Router on a Stick for communication between VLANs...</p>
+                            </a>
+                            <a href="pvst-configuration.html" class="related-card">
+                                <div class="related-category ccna">Networking</div>
+                                <h4>PVST Configuration</h4>
+                                <p>Per-VLAN Spanning Tree for loop prevention...</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h4>About</h4>
+                    <p>Documenting my journey through network security and system administration.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="../all-posts.html">All Posts</a></li>
+                        <li><a href="../index.html#about">About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Categories</h4>
+                    <ul>
+                        <li><a href="../windows-server.html">Windows Server</a></li>
+                        <li><a href="../networking.html">Networking</a></li>
+                        <li><a href="../cybersecurity-101.html">Cybersecurity</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Connect</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ThreatLens. All rights reserved.</p>
+                <button class="back-to-top" id="backToTop">
+                    <i class="fas fa-chevron-up"></i>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="../js/script.js"></script>
+    <script src="../js/post-script.js"></script>
+</body>
+</html>

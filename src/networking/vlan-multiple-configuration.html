@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiple VLANs Configuration — VLAN Segmentation | ThreatLens</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/post-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <div class="nav-brand">
+                <img src="../logo.svg" alt="ThreatLens Logo" style="width: 35px; height: 35px;">
+                <span>ThreatLens</span>
+            </div>
+            <button class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="../index.html#learning-paths" class="nav-link">Learning Paths</a></li>
+                <li><a href="../all-posts.html" class="nav-link active">All Posts</a></li>
+                <li><a href="../index.html#about" class="nav-link">About</a></li>
+            </ul>
+            <div class="nav-search" onclick="window.location.href='../all-posts.html'" style="cursor: pointer;">
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Post Header -->
+    <article class="post-article">
+        <div class="post-header">
+            <div class="container">
+                <div class="breadcrumb">
+                    <a href="../index.html"><i class="fas fa-home"></i> Home</a>
+                    <span>/</span>
+                    <a href="../networking.html">Networking</a>
+                    <span>/</span>
+                    <span>Multiple VLANs</span>
+                </div>
+                <div class="post-category-badge ccna">Networking</div>
+                <h1 class="post-main-title">Multiple VLANs Configuration — VLAN Segmentation</h1>
+                <div class="post-meta-info">
+                    <div class="meta-item">
+                        <i class="fas fa-calendar"></i>
+                        <span>February 16, 2026</span>
+                    </div>
+                    <div class="meta-item">
+                        <i class="fas fa-clock"></i>
+                        <span>10 min read</span>
+                    </div>
+                </div>
+                <div class="post-tags-header">
+                    <span class="tag">VLAN</span>
+                    <span class="tag">Multiple VLANs</span>
+                    <span class="tag">Interface Range</span>
+                    <span class="tag">Network Segmentation</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Post Content -->
+        <div class="post-body">
+            <div class="container post-container">
+                <!-- Table of Contents Sidebar -->
+                <aside class="post-sidebar">
+                    <div class="toc-wrapper">
+                        <h3 class="toc-title">Table of Contents</h3>
+                        <nav class="toc">
+                            <ul>
+                                <li><a href="#what-i-learned" class="toc-link active">What I Learned</a></li>
+                                <li><a href="#what-is-segmentation" class="toc-link">VLAN Segmentation</a></li>
+                                <li><a href="#my-topology" class="toc-link">My Lab Topology</a></li>
+                                <li><a href="#configuration" class="toc-link">Configuration</a></li>
+                                <li><a href="#key-takeaways" class="toc-link">Key Takeaways</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="share-section">
+                        <h4>Share This Post</h4>
+                        <div class="share-buttons">
+                            <a href="#" class="share-btn linkedin"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="share-btn reddit"><i class="fab fa-reddit"></i></a>
+                            <a href="#" class="share-btn link"><i class="fas fa-link"></i></a>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Main Content -->
+                <div class="post-content-main">
+
+                    <section id="what-i-learned">
+                        <h2>What I Learned</h2>
+                        <p>I created three separate VLANs on a single switch and saw real network segmentation in action. Computers in VLAN 100 couldn't ping computers in VLAN 200 or 300 — complete isolation at Layer 2, even though they're all on the same physical switch.</p>
+                        <p>The <code class="inline-code">interface range</code> command was a game-changer for configuring multiple ports at once. Instead of configuring 10 ports individually, I grouped them and applied VLAN settings in one command.</p>
+                    </section>
+
+                    <section id="what-is-segmentation">
+                        <h2>VLAN Segmentation</h2>
+                        <p><strong>VLAN Segmentation</strong> divides a physical network into multiple logical networks. Each VLAN is a separate broadcast domain, providing isolation, security, and traffic control without requiring separate physical switches.</p>
+
+                        <h3>Why Segment with Multiple VLANs?</h3>
+                        <div class="callout callout-info">
+                            <div class="callout-icon"><i class="fas fa-shield-alt"></i></div>
+                            <div class="callout-content">
+                                <strong>Real-World Example:</strong> A company might use:
+                                <ul style="margin: 0.5rem 0 0 0;">
+                                    <li>VLAN 100 → Management/Admin</li>
+                                    <li>VLAN 200 → Employees</li>
+                                    <li>VLAN 300 → Guest WiFi</li>
+                                </ul>
+                                Each department is isolated, preventing guests from accessing employee resources.
+                            </div>
+                        </div>
+
+                        <h3>Interface Range Command</h3>
+                        <p>The <code class="inline-code">interface range</code> command configures multiple interfaces simultaneously:</p>
+                        
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">Interface Range Examples</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-bash">! Configure Fa0/10 through Fa0/20
+interface range fa0/10-20
+
+! Configure Fa0/1, Fa0/5, and Fa0/10
+interface range fa0/1, fa0/5, fa0/10
+
+! Configure Fa0/10-20 AND Fa0/30
+interface range fa0/10-20, fa0/30</code></pre>
+                        </div>
+                    </section>
+
+                    <section id="my-topology">
+                        <h2>My Lab Topology</h2>
+                        <p>One switch connecting multiple computers across three VLANs. Different port ranges assigned to different VLANs for department segmentation.</p>
+
+                        <h3>VLAN Design</h3>
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>VLAN ID</th>
+                                        <th>VLAN Name</th>
+                                        <th>Ports</th>
+                                        <th>Purpose</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>100</strong></td>
+                                        <td>Management</td>
+                                        <td>Fa0/10-20, Fa0/30</td>
+                                        <td>Admin & IT staff</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>200</strong></td>
+                                        <td>Employees</td>
+                                        <td>Fa0/1-9</td>
+                                        <td>Regular employees</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>300</strong></td>
+                                        <td>Guests</td>
+                                        <td>Fa0/21-24</td>
+                                        <td>Guest access</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3>Expected Behavior</h3>
+                        <div class="callout callout-success">
+                            <div class="callout-icon"><i class="fas fa-network-wired"></i></div>
+                            <div class="callout-content">
+                                <strong>Communication Rules:</strong>
+                                <ul style="margin: 0.5rem 0 0 0;">
+                                    <li>✅ Devices in VLAN 100 can ping each other</li>
+                                    <li>✅ Devices in VLAN 200 can ping each other</li>
+                                    <li>✅ Devices in VLAN 300 can ping each other</li>
+                                    <li>❌ VLAN 100 cannot ping VLAN 200 (isolated)</li>
+                                    <li>❌ VLAN 200 cannot ping VLAN 300 (isolated)</li>
+                                    <li>❌ VLAN 100 cannot ping VLAN 300 (isolated)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="configuration">
+                        <h2>Configuration Steps</h2>
+
+                        <h3>Step 1 — Create All VLANs</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">Cisco IOS — Switch Configuration</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-bash">enable
+configure terminal
+
+! Create VLAN 100
+vlan 100
+ name Management
+ exit
+
+! Create VLAN 200
+vlan 200
+ name Employees
+ exit
+
+! Create VLAN 300
+vlan 300
+ name Guests
+ exit</code></pre>
+                        </div>
+
+                        <h3>Step 2 — Assign Port Ranges to VLANs</h3>
+
+                        <h4>VLAN 100 (Management) — Fa0/10-20 and Fa0/30</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">VLAN 100 Configuration</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-bash">! Configure range Fa0/10 through Fa0/20
+interface range fa0/10-20
+ switchport mode access
+ switchport access vlan 100
+ no shutdown
+ exit
+
+! Configure Fa0/30
+interface fa0/30
+ switchport mode access
+ switchport access vlan 100
+ no shutdown
+ exit</code></pre>
+                        </div>
+
+                        <h4>VLAN 200 (Employees) — Fa0/1-9</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">VLAN 200 Configuration</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-bash">! Configure range Fa0/1 through Fa0/9
+interface range fa0/1-9
+ switchport mode access
+ switchport access vlan 200
+ no shutdown
+ exit</code></pre>
+                        </div>
+
+                        <h4>VLAN 300 (Guests) — Fa0/21-24</h4>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">VLAN 300 Configuration</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-bash">! Configure range Fa0/21 through Fa0/24
+interface range fa0/21-24
+ switchport mode access
+ switchport access vlan 300
+ no shutdown
+ exit
+
+! Save configuration
+end
+write memory</code></pre>
+                        </div>
+
+                        <div class="callout callout-info">
+                            <div class="callout-icon"><i class="fas fa-lightbulb"></i></div>
+                            <div class="callout-content">
+                                <strong>Pro Tip:</strong> Using <code class="inline-code">interface range</code> saved me tons of time. Instead of typing 11 separate interface configurations for VLAN 100, I did it in two commands!
+                            </div>
+                        </div>
+
+                        <h3>Step 3 — Verify Configuration</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">Verification</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-bash">! Show all VLANs
+show vlan brief
+
+! Show specific VLAN
+show vlan id 100
+show vlan id 200
+show vlan id 300
+
+! Verify specific interface
+show interface fa0/10 switchport
+show interface fa0/5 switchport
+show interface fa0/22 switchport</code></pre>
+                        </div>
+
+                        <h3>Understanding show vlan brief Output</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">Sample Output</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-bash">Switch# show vlan brief
+
+VLAN Name                             Status    Ports
+---- -------------------------------- --------- -------------------------------
+1    default                          active    Fa0/25, Fa0/26, Fa0/27, ...
+100  Management                       active    Fa0/10, Fa0/11, Fa0/12, 
+                                                 Fa0/13, Fa0/14, Fa0/15,
+                                                 Fa0/16, Fa0/17, Fa0/18,
+                                                 Fa0/19, Fa0/20, Fa0/30
+200  Employees                        active    Fa0/1, Fa0/2, Fa0/3,
+                                                 Fa0/4, Fa0/5, Fa0/6,
+                                                 Fa0/7, Fa0/8, Fa0/9
+300  Guests                           active    Fa0/21, Fa0/22, Fa0/23, Fa0/24</code></pre>
+                        </div>
+
+                        <h3>Step 4 — Test VLAN Isolation</h3>
+                        <div class="callout callout-success">
+                            <div class="callout-icon"><i class="fas fa-check-circle"></i></div>
+                            <div class="callout-content">
+                                <strong>Testing Results:</strong>
+                                <ul style="margin: 0.5rem 0 0 0;">
+                                    <li>Computer on Fa0/10 (VLAN 100) ✅ pinged computer on Fa0/15 (VLAN 100) — Success</li>
+                                    <li>Computer on Fa0/10 (VLAN 100) ❌ pinged computer on Fa0/5 (VLAN 200) — Failed (isolated)</li>
+                                    <li>Computer on Fa0/22 (VLAN 300) ✅ pinged computer on Fa0/23 (VLAN 300) — Success</li>
+                                </ul>
+                                This proved VLANs were properly isolating traffic!
+                            </div>
+                        </div>
+
+                        <h3>Optional — Bulk Configuration Tips</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">Advanced Interface Range</span>
+                                <button class="copy-btn" onclick="copyCode(this)">
+                                    <i class="fas fa-copy"></i> Copy
+                                </button>
+                            </div>
+                            <pre><code class="language-bash">! Configure multiple non-contiguous ranges at once
+interface range fa0/1-9, fa0/21-24
+ description Employee and Guest ports
+ spanning-tree portfast
+ no shutdown
+ exit
+
+! Apply settings to ALL FastEthernet ports
+interface range fa0/1-24
+ switchport mode access
+ exit</code></pre>
+                        </div>
+                    </section>
+
+                    <section id="key-takeaways">
+                        <h2>Key Takeaways</h2>
+
+                        <div class="feature-box">
+                            <h4><i class="fas fa-key"></i> What I Understood</h4>
+                            <ul>
+                                <li>Multiple VLANs on one switch provide complete Layer 2 isolation</li>
+                                <li><code class="inline-code">interface range</code> command drastically speeds up configuration</li>
+                                <li>Each VLAN is a separate broadcast domain</li>
+                                <li>Devices in different VLANs cannot communicate without a router</li>
+                                <li>VLAN names help identify purpose but don't affect functionality</li>
+                                <li>Port ranges can be non-contiguous (Fa0/10-20, Fa0/30)</li>
+                                <li><code class="inline-code">show vlan brief</code> shows all VLANs and their member ports</li>
+                            </ul>
+                        </div>
+
+                        <h3>VLAN Design Best Practices</h3>
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Practice</th>
+                                        <th>Reason</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Plan VLAN IDs in ranges</td>
+                                        <td>100-199 = Management, 200-299 = Users, etc.</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Always name VLANs</td>
+                                        <td>Easier troubleshooting and documentation</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Document port assignments</td>
+                                        <td>Know which ports belong to which VLAN</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Use interface range</td>
+                                        <td>Faster configuration, fewer errors</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Shutdown unused ports</td>
+                                        <td>Security — prevent unauthorized connections</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3>Interface Range Syntax</h3>
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Command</th>
+                                        <th>What It Does</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><code>interface range fa0/1-10</code></td>
+                                        <td>Fa0/1 through Fa0/10 (continuous)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>interface range fa0/1, fa0/5</code></td>
+                                        <td>Only Fa0/1 and Fa0/5 (specific ports)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>interface range fa0/1-10, fa0/20</code></td>
+                                        <td>Fa0/1-10 plus Fa0/20</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>interface range fa0/1-24</code></td>
+                                        <td>All FastEthernet ports</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3>Common Mistakes</h3>
+                        <div class="callout callout-warning">
+                            <div class="callout-icon"><i class="fas fa-tools"></i></div>
+                            <div class="callout-content">
+                                <ul style="margin: 0.5rem 0 0 0;">
+                                    <li><strong>Wrong range syntax:</strong> Used spaces instead of hyphens — <code class="inline-code">fa0/1 - 10</code> instead of <code class="inline-code">fa0/1-10</code></li>
+                                    <li><strong>Forgot to create VLAN first:</strong> Assigned ports to VLAN 100 before creating it — Cisco auto-created it but best practice is explicit creation</li>
+                                    <li><strong>Tested within same VLAN:</strong> Initially tested ping between two computers in VLAN 100 and thought isolation failed — needed to test across VLANs</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Related Posts -->
+                    <div class="related-posts">
+                        <h3>Related Posts</h3>
+                        <div class="related-grid">
+                            <a href="vlan-basic-configuration.html" class="related-card">
+                                <div class="related-category ccna">Networking</div>
+                                <h4>Basic VLAN Configuration</h4>
+                                <p>Creating your first VLAN with two computers...</p>
+                            </a>
+                            <a href="inter-vlan-routing.html" class="related-card">
+                                <div class="related-category ccna">Networking</div>
+                                <h4>Inter-VLAN Routing</h4>
+                                <p>Router on a Stick for VLAN communication...</p>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h4>About</h4>
+                    <p>Documenting my journey through network security and system administration.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="../all-posts.html">All Posts</a></li>
+                        <li><a href="../index.html#about">About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Categories</h4>
+                    <ul>
+                        <li><a href="../windows-server.html">Windows Server</a></li>
+                        <li><a href="../networking.html">Networking</a></li>
+                        <li><a href="../cybersecurity-101.html">Cybersecurity</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Connect</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ThreatLens. All rights reserved.</p>
+                <button class="back-to-top" id="backToTop">
+                    <i class="fas fa-chevron-up"></i>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="../js/script.js"></script>
+    <script src="../js/post-script.js"></script>
+</body>
+</html>

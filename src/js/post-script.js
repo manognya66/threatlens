@@ -191,7 +191,7 @@ images.forEach(img => {
         `;
         
         const modalImg = document.createElement('img');
-        modalImg... = this...;
+        modalImg.src = this.src;
         modalImg.style.cssText = `
             max-width: 90%;
             max-height: 90%;
@@ -323,16 +323,16 @@ if ('IntersectionObserver' in window) {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 const img = entry.target;
-                if (img.dataset...) {
-                    img... = img.dataset...;
-                    img.removeAttribute('data-..');
+                if (img.dataset.src) {
+                    img.src = img.dataset.src;
+                    img.removeAttribute('data-src');
                 }
                 observer.unobserve(img);
             }
         });
     });
     
-    document.querySelectorAll('img[data-..]').forEach(img => {
+    document.querySelectorAll('img[data-src]').forEach(img => {
         imageObserver.observe(img);
     });
 }

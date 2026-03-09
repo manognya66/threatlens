@@ -80,36 +80,36 @@ document.addEventListener('DOMContentLoaded', () => {
 // ========================
 // Reading Progress Bar
 // ========================
-function createProgressBar() {
-    const progressBar = document.createElement('div');
-    progressBar.id = 'reading-progress';
-    progressBar.style.cssText = `
-        position: fixed;
-        top: 70px;
-        left: 0;
-        width: 0%;
-        height: 3px;
-        background: linear-gradient(90deg, #64ffda, #00ff88);
-        z-index: 1000;
-        transition: width 0.1s ease;
-    `;
-    document.body.appendChild(progressBar);
-}
+// function createProgressBar() {
+//     const progressBar = document.createElement('div');
+//     progressBar.id = 'reading-progress';
+//     progressBar.style.cssText = `
+//         position: fixed;
+//         top: 70px;
+//         left: 0;
+//         width: 0%;
+//         height: 3px;
+//         background: linear-gradient(90deg, #64ffda, #00ff88);
+//         z-index: 1000;
+//         transition: width 0.1s ease;
+//     `;
+//     document.body.appendChild(progressBar);
+// }
 
-function updateProgressBar() {
-    const progressBar = document.getElementById('reading-progress');
-    if (!progressBar) return;
+// function updateProgressBar() {
+//     const progressBar = document.getElementById('reading-progress');
+//     if (!progressBar) return;
     
-    const windowHeight = window.innerHeight;
-    const documentHeight = document.documentElement.scrollHeight - windowHeight;
-    const scrolled = window.scrollY;
-    const progress = (scrolled / documentHeight) * 100;
+//     const windowHeight = window.innerHeight;
+//     const documentHeight = document.documentElement.scrollHeight - windowHeight;
+//     const scrolled = window.scrollY;
+//     const progress = (scrolled / documentHeight) * 100;
     
-    progressBar.style.width = progress + '%';
-}
+//     progressBar.style.width = progress + '%';
+// }
 
-createProgressBar();
-window.addEventListener('scroll', updateProgressBar);
+// createProgressBar();
+// window.addEventListener('scroll', updateProgressBar);
 
 // ========================
 // Smooth Scroll with Offset for TOC

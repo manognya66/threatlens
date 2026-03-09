@@ -290,22 +290,6 @@ tags.forEach(tag => {
     });
 });
 
-// ============================================================
-// AUTO POST COUNT
-// Reads data-category from every .post-card in #posts-timeline
-// and writes the total into each track card — automatically.
-//
-// ADDING A POST  → add data-category="category-name" to the article
-// REMOVING A POST → delete the article block
-// COUNT UPDATES on every page load. No manual editing needed.
-//
-// Valid category values:
-//   "networking"     → Networking track
-//   "windows-server" → Windows Server track
-//   "web"            → Web Fundamentals track
-//   "presec"         → Pre Security track
-//   "pentest"        → Jr Penetration Tester track
-// ============================================================
 (function updatePostCounts() {
     const categories = {
         'networking':     { badge: 'badge-networking'     },

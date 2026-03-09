@@ -12,10 +12,7 @@ function setActiveTocLink(id) {
 
 function updateActiveTocLink() {
     if (!tocSections.length || !tocLinks.length) return;
-
-    // Use getBoundingClientRect() — always accurate, never stale.
-    // A section is "current" when its top edge has crossed into the upper
-    // 40% of the viewport. We walk all sections and keep the last one that
+    
     // has passed that threshold.
     const threshold = window.innerHeight * 0.4;
     let activeId = tocSections[0].getAttribute('id'); // default: first section

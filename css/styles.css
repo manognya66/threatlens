@@ -86,7 +86,6 @@ body {
 
 .navbar.scrolled {
     background: rgba(10, 25, 47, 0.95);
-    box-shadow: var(--shadow-md);
 }
 
 .nav-container {
@@ -475,6 +474,15 @@ body {
     line-height: 1.7;
 }
 
+.track-meta {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    margin-top: auto;
+    flex-wrap: wrap;
+}
+
 .post-count {
     color: var(--text-secondary);
     font-size: 1rem;
@@ -505,7 +513,6 @@ body {
     align-items: center;
     gap: 0.5rem;
     transition: gap var(--transition-normal);
-    margin-top: auto;
 }
 
 .track-link:hover {

@@ -59,12 +59,6 @@
     border: 1px solid rgba(27, 160, 215, 0.3);
 }
 
-.post-category-badge.ccna {
-    background: rgba(27, 160, 215, 0.15);
-    color: #1ba0d7;
-    border: 1px solid rgba(27, 160, 215, 0.3);
-}
-
 .post-main-title {
     font-size: 3rem;
     font-weight: 700;

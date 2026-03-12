@@ -67,11 +67,55 @@
 
             <div class="posts-timeline">
                 <!-- Add your posts here -->
-                <div style="text-align: center; padding: 4rem 2rem; color: var(--text-secondary); background: var(--card-bg); border-radius: 12px;">
-                    <i class="fas fa-user-secret" style="font-size: 3rem; margin-bottom: 1rem; display: block; color: var(--pentest-color); opacity: 0.5;"></i>
-                    <h3 style="color: var(--text-heading); margin-bottom: 0.5rem;">Posts Coming Soon</h3>
-                    <p style="font-style: italic; margin: 0;">Add your posts here...</p>
-                </div>
+                <!-- POST: IDOR – Broken Access Control -->
+                <article class="post-card" data-category="pentest" data-tags="idor broken access control owasp a01 burp suite juice shop insecure direct object reference" data-title="IDOR – Broken Access Control">
+                    <div class="post-category" style="background:rgba(211,47,47,0.15);color:#ef5350;border:1px solid rgba(211,47,47,0.3);display:inline-block;padding:0.25rem 0.75rem;border-radius:20px;font-size:0.75rem;font-weight:600;margin-bottom:1rem;">Jr Penetration Tester</div>
+                    <div class="post-content">
+                        <div class="post-date"><i class="fas fa-calendar"></i> March 12, 2026</div>
+                        <h3 class="post-title">IDOR – Broken Access Control</h3>
+                        <p class="post-excerpt">Exploiting Insecure Direct Object Reference in OWASP Juice Shop's basket API — modifying a basket ID in Burp Repeater to access another user's shopping cart without any authorization check...</p>
+                        <div class="post-tags">
+                            <span class="tag">IDOR</span>
+                            <span class="tag">Broken Access Control</span>
+                            <span class="tag">OWASP A01</span>
+                        </div>
+                        <a href="./penetration-testing/idor-broken-access-control.html" class="post-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+
+                <!-- POST: SQL Injection – Authentication Bypass -->
+                <article class="post-card" data-category="pentest" data-tags="sql injection sqli authentication bypass owasp a03 burp suite juice shop admin login" data-title="SQL Injection – Authentication Bypass">
+                    <div class="post-category" style="background:rgba(211,47,47,0.15);color:#ef5350;border:1px solid rgba(211,47,47,0.3);display:inline-block;padding:0.25rem 0.75rem;border-radius:20px;font-size:0.75rem;font-weight:600;margin-bottom:1rem;">Jr Penetration Tester</div>
+                    <div class="post-content">
+                        <div class="post-date"><i class="fas fa-calendar"></i> March 12, 2026</div>
+                        <h3 class="post-title">SQL Injection – Authentication Bypass</h3>
+                        <p class="post-excerpt">Bypassing login on OWASP Juice Shop with a classic SQLi payload — injecting OR 1=1-- into the email field via Burp Repeater to authenticate as the administrator without knowing the password...</p>
+                        <div class="post-tags">
+                            <span class="tag">SQL Injection</span>
+                            <span class="tag">Auth Bypass</span>
+                            <span class="tag">OWASP A03</span>
+                        </div>
+                        <a href="./penetration-testing/sqli-authentication-bypass.html" class="post-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+
+                <!-- POST: Cross-Site Scripting (XSS) -->
+                <article class="post-card" data-category="pentest" data-tags="xss cross site scripting reflected dom stored owasp a05 juice shop burp suite javascript injection" data-title="Cross-Site Scripting (XSS) Exploitation">
+                    <div class="post-category" style="background:rgba(211,47,47,0.15);color:#ef5350;border:1px solid rgba(211,47,47,0.3);display:inline-block;padding:0.25rem 0.75rem;border-radius:20px;font-size:0.75rem;font-weight:600;margin-bottom:1rem;">Jr Penetration Tester</div>
+                    <div class="post-content">
+                        <div class="post-date"><i class="fas fa-calendar"></i> March 12, 2026</div>
+                        <h3 class="post-title">Cross-Site Scripting (XSS) Exploitation</h3>
+                        <p class="post-excerpt">Three XSS attack vectors on OWASP Juice Shop — Reflected XSS via search, DOM-based XSS through URL manipulation, and Stored XSS via the feedback form persisting payloads in the database...</p>
+                        <div class="post-tags">
+                            <span class="tag">XSS</span>
+                            <span class="tag">Reflected</span>
+                            <span class="tag">DOM XSS</span>
+                            <span class="tag">Stored XSS</span>
+                        </div>
+                        <a href="./penetration-testing/xss-exploitation.html" class="post-read-more">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </article>
+
             </div>
         </div>
     </section>

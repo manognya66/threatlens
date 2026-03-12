@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IDOR – Broken Access Control | ThreatLens</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/post-styles.css">
+    <link rel="shortcut icon" href="../logos/logo.svg" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <div class="nav-brand">
+                <img src="../logos/logo.svg" alt="ThreatLens Logo" style="width: 35px; height: 35px;">
+                <span>ThreatLens</span>
+            </div>
+            <button class="nav-toggle" id="navToggle">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="../index.html#learning-paths" class="nav-link">Learning Paths</a></li>
+                <li><a href="../all-posts.html" class="nav-link active">All Posts</a></li>
+                <li><a href="../index.html#about" class="nav-link">About</a></li>
+            </ul>
+            <div class="nav-search" onclick="window.location.href='../all-posts.html'" style="cursor: pointer;">
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
+    </nav>
+
+    <article class="post-article">
+        <div class="post-header">
+            <div class="container">
+                <div class="breadcrumb">
+                    <a href="../index.html"><i class="fas fa-home"></i> Home</a>
+                    <span>/</span>
+                    <a href="../penetration-testing.html">Jr Penetration Tester</a>
+                    <span>/</span>
+                    <span>IDOR - Broken Access Control</span>
+                </div>
+                <div class="post-category-badge" style="background: rgba(211,47,47,0.15); color: #ef5350; border: 1px solid rgba(211,47,47,0.3);">Jr Penetration Tester</div>
+                <h1 class="post-main-title">Broken Access Control - Insecure Direct Object Reference (IDOR)</h1>
+                <div class="post-meta-info">
+                    <div class="meta-item"><i class="fas fa-calendar"></i><span>March 12, 2026</span></div>
+                    <div class="meta-item"><i class="fas fa-clock"></i><span>6 min read</span></div>
+                    <div class="meta-item"><i class="fas fa-flask"></i><span>OWASP Juice Shop</span></div>
+                </div>
+                <div class="post-tags-header">
+                    <span class="tag">IDOR</span>
+                    <span class="tag">Broken Access Control</span>
+                    <span class="tag">OWASP A01</span>
+                    <span class="tag">Burp Suite</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="post-body">
+            <div class="container post-container">
+                <!-- Sidebar -->
+                <aside class="post-sidebar">
+                    <div class="toc-wrapper">
+                        <h3 class="toc-title">Table of Contents</h3>
+                        <nav class="toc">
+                            <ul>
+                                <li><a href="#summary" class="toc-link active">Vulnerability Summary</a></li>
+                                <li><a href="#classification" class="toc-link">Classification</a></li>
+                                <li><a href="#attack-scenario" class="toc-link">Attack Scenario</a></li>
+                                <li><a href="#steps" class="toc-link">Steps to Reproduce</a></li>
+                                <li><a href="#proof" class="toc-link">Proof of Exploitation</a></li>
+                                <li><a href="#root-cause" class="toc-link">Root Cause</a></li>
+                                <li><a href="#mitigation" class="toc-link">Mitigation</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="share-section">
+                        <h4>Share This Post</h4>
+                        <div class="share-buttons">
+                            <a href="#" class="share-btn linkedin"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="share-btn reddit"><i class="fab fa-reddit"></i></a>
+                            <a href="#" class="share-btn link"><i class="fas fa-link"></i></a>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Main Content -->
+                <div class="post-content-main">
+
+                    <section id="summary">
+                        <h2>Vulnerability Summary</h2>
+                        <p>The application exposes a <strong>Broken Access Control</strong> vulnerability in the basket API endpoint. An authenticated user can modify the basket identifier in the request URL to access other users' shopping carts.</p>
+                        <p>The application does <strong>not verify ownership</strong> of the requested basket resource, allowing unauthorized access to sensitive data belonging to other users. This is a classic <strong>Insecure Direct Object Reference (IDOR)</strong>.</p>
+
+                        <div class="callout callout-warning">
+                            <div class="callout-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                            <div class="callout-content">
+                                <strong>Target:</strong> OWASP Juice Shop &nbsp;|&nbsp;
+                                <strong>Tool:</strong> Burp Suite &nbsp;|&nbsp;
+                                <strong>Environment:</strong> Kali Linux &nbsp;|&nbsp;
+                                <strong>OWASP Category:</strong> A01 – Broken Access Control
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="classification">
+                        <h2>Vulnerability Classification</h2>
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr><th>Category</th><th>Value</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>OWASP Top 10</td><td><strong>A01 – Broken Access Control</strong></td></tr>
+                                    <tr><td>Vulnerability Type</td><td>IDOR (Insecure Direct Object Reference)</td></tr>
+                                    <tr><td>Attack Vector</td><td>Authenticated User</td></tr>
+                                    <tr><td>Affected Endpoint</td><td><code class="inline-code">GET /rest/basket/{id}</code></td></tr>
+                                    <tr><td>Impact</td><td>Unauthorized Data Access</td></tr>
+                                    <tr><td>Severity</td><td><strong style="color:#ef5350;">High</strong></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="callout callout-info">
+                            <div class="callout-icon"><i class="fas fa-shield-alt"></i></div>
+                            <div class="callout-content">
+                                <strong>Severity Metrics</strong>
+                                <ul style="margin: 0.5rem 0 0 0;">
+                                    <li>Attack Complexity: <strong>Low</strong></li>
+                                    <li>Privileges Required: <strong>Low</strong> (requires login)</li>
+                                    <li>User Interaction: <strong>None</strong></li>
+                                    <li>Impact: <strong>High</strong></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="attack-scenario">
+                        <h2>Attack Scenario</h2>
+                        <p>A malicious authenticated user discovers that the basket endpoint uses a sequential integer ID in the URL. By incrementing or decrementing this ID, they can access baskets belonging to other users without any authorisation error.</p>
+
+                        <div class="step-by-step">
+                            <div class="step">
+                                <div class="step-number">1</div>
+                                <div class="step-content">
+                                    <h4>Attacker's own basket request</h4>
+                                    <p>After adding an item to their cart, the attacker's authenticated request goes to:</p>
+                                    <div class="code-block" style="margin: 0.75rem 0 0;">
+                                        <div class="code-header"><span class="code-language">HTTP Request</span></div>
+                                        <pre><code class="language-http">GET /rest/basket/6 HTTP/1.1
+Host: localhost:3000
+Authorization: Bearer &lt;JWT_TOKEN&gt;</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">2</div>
+                                <div class="step-content">
+                                    <h4>Manipulated request</h4>
+                                    <p>The attacker changes <code class="inline-code">/6</code> to <code class="inline-code">/1</code> to target another user's basket:</p>
+                                    <div class="code-block" style="margin: 0.75rem 0 0;">
+                                        <div class="code-header"><span class="code-language">HTTP Request — Modified</span></div>
+                                        <pre><code class="language-http">GET /rest/basket/1 HTTP/1.1
+Host: localhost:3000
+Authorization: Bearer &lt;JWT_TOKEN&gt;</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <div class="step-number">3</div>
+                                <div class="step-content">
+                                    <h4>Server returns another user's data</h4>
+                                    <p>No ownership check is performed — the server returns basket data belonging to <code class="inline-code">UserId: 1</code> to a different authenticated user.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="steps">
+                        <h2>Steps to Reproduce</h2>
+
+                        <h3>Step 1 — Register a New User Account</h3>
+                        <div class="code-block">
+                            <div class="code-header"><span class="code-language">Test Credentials</span></div>
+                            <pre><code>email:    user2@gmail.com
+password: User2</code></pre>
+                        </div>
+
+                        <h3>Step 2 — Log In and Add a Product to Basket</h3>
+                        <img src="./A01 Broken Access Control (IDOR)/1.1.png" alt="pic" style="width: 100%; height: auto; border-radius: 8px; margin: 1rem 0;">
+                        <p>Log in with the registered account, navigate to the products page and click <strong>Add to Basket</strong>. This triggers a request that includes the basket identifier.</p>
+
+                        <h3>Step 3 — Intercept the Request in Burp Suite</h3>
+                        <img src="./A01 Broken Access Control (IDOR)/1.png" alt="Request intercepted in Burp Suite" style="width: 100%; height: auto;">
+                        <p>With Burp Suite Proxy active, capture the request triggered by the basket action:</p>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">Captured Request</span>
+                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code class="language-http">GET /rest/basket/6 HTTP/1.1
+Host: localhost:3000
+Authorization: Bearer &lt;JWT_TOKEN&gt;</code></pre>
+                        </div>
+                        <p>The basket identifier <strong>(6)</strong> is exposed directly in the URL — no obfuscation or token-based reference.</p>
+
+                        <h3>Step 4 — Send to Repeater and Modify the ID</h3>
+                        <img src="./A01 Broken Access Control (IDOR)/2.png" alt="Request sent to Burp Repeater" style="width: 100%; height: auto;">
+                        <p>Right-click the request → <strong>Send to Repeater</strong>. Change the basket ID from <code class="inline-code">6</code> to <code class="inline-code">1</code> and send.</p>
+
+                        <div class="callout callout-info">
+                            <div class="callout-icon"><i class="fas fa-lightbulb"></i></div>
+                            <div class="callout-content">
+                                Burp Repeater lets you manually resend and edit HTTP requests without going through the browser — essential for testing parameter manipulation.
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="proof">
+                        <h2>Proof of Exploitation</h2>
+                        <p>The server returns <code class="inline-code">HTTP 200 OK</code> with basket data belonging to a different user:</p>
+
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">Server Response</span>
+                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code class="language-json">{
+  "status": "success",
+  "data": {
+    "id": 1,
+    "UserId": 1,
+    "Products": [
+      {
+        "id": 1,
+        "name": "Apple Juice (1000ml)",
+        "price": 1.99
+      }
+    ]
+  }
+}</code></pre>
+                        </div>
+                        <img src="./A01 Broken Access Control (IDOR)/3.png" alt="pic" style="width: 100%; height: auto; border-radius: 8px; margin: 1rem 0;">
+
+                        <div class="callout callout-warning">
+                            <div class="callout-icon"><i class="fas fa-exclamation-circle"></i></div>
+                            <div class="callout-content">
+                                The response shows <code class="inline-code">UserId: 1</code> — but the authenticated user making the request is <strong>user2</strong>. The server returned another user's basket without any authorization check.
+                            </div>
+                        </div>
+
+                        <h3>Screenshots (Evidence)</h3>
+                        <div class="settings-table">
+                            <table>
+                                <thead><tr><th>Figure</th><th>Description</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Figure 1 (1.1.png)</td><td>Add product to basket</td></tr>
+                                    <tr><td>Figure 2 (1.png)</td><td>Request intercepted in Burp Suite</td></tr>
+                                    <tr><td>Figure 3 (2.png)</td><td>Request sent to Burp Repeater</td></tr>
+                                    <tr><td>Figure 4 (3.png – request)</td><td>Basket ID modified to /1</td></tr>
+                                    <tr><td>Figure 5 (3.png – response)</td><td>Unauthorized basket data returned</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3>Impact</h3>
+                        <ul>
+                            <li>Unauthorized access to other users' purchase data</li>
+                            <li>Exposure of user activity, items, and purchasing patterns</li>
+                            <li>Privacy violations and potential data leakage</li>
+                            <li>In production: exposure of customer orders and personal information</li>
+                        </ul>
+                    </section>
+
+                    <section id="root-cause">
+                        <h2>Root Cause</h2>
+                        <p>The application fails to enforce authorization checks when retrieving basket resources. The server trusts the user-provided basket identifier instead of verifying ownership.</p>
+
+                        <h3>Vulnerable Logic</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">Python — Vulnerable</span>
+                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code class="language-python"># ❌ No ownership check — anyone can access any basket ID
+if basketId exists:
+    return basket</code></pre>
+                        </div>
+
+                        <h3>Secure Logic</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">Python — Secure</span>
+                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code class="language-python"># ✅ Ownership verified before returning data
+if basket.owner == logged_in_user:
+    return basket
+else:
+    return 403 Forbidden</code></pre>
+                        </div>
+                    </section>
+
+                    <section id="mitigation">
+                        <h2>Mitigation</h2>
+
+                        <div class="feature-box">
+                            <h4><i class="fas fa-shield-alt"></i> Recommended Fixes</h4>
+                            <ul>
+                                <li><strong>Verify resource ownership</strong> — compare the basket's <code class="inline-code">userId</code> against the authenticated user's ID before returning any data</li>
+                                <li><strong>Avoid sequential IDs</strong> — use UUIDs or non-guessable indirect references instead of incrementing integers</li>
+                                <li><strong>Implement access control at API level</strong> — authorization checks must happen server-side, not just in the frontend</li>
+                                <li><strong>Use indirect object references</strong> — map user-visible IDs to internal IDs server-side</li>
+                                <li><strong>Return 403 Forbidden</strong> — never return 200 with empty data for unauthorized requests; always deny explicitly</li>
+                            </ul>
+                        </div>
+
+                        <div class="callout callout-success">
+                            <div class="callout-icon"><i class="fas fa-check-circle"></i></div>
+                            <div class="callout-content">
+                                <strong>Secure fix example:</strong><br>
+                                <code class="inline-code">if basket.userId == authenticatedUserId: return basket else: return 403</code>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Related Posts -->
+                    <div class="related-posts">
+                        <h3>Related Posts</h3>
+                        <div class="related-grid">
+                            <a href="./sqli-authentication-bypass.html" class="related-card">
+                                <div class="related-category pentest">Jr Penetration Tester</div>
+                                <h4>SQL Injection – Authentication Bypass</h4>
+                                <p>Bypassing login with crafted SQL payloads to gain admin access on OWASP Juice Shop...</p>
+                            </a>
+                            <a href="./xss-exploitation.html" class="related-card">
+                                <div class="related-category pentest">Jr Penetration Tester</div>
+                                <h4>Cross-Site Scripting (XSS)</h4>
+                                <p>Reflected, DOM-based, and Stored XSS exploitation in OWASP Juice Shop...</p>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h4>About</h4>
+                    <p>Documenting my journey through network security and system administration.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="../all-posts.html">All Posts</a></li>
+                        <li><a href="../index.html#about">About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Categories</h4>
+                    <ul>
+                        <li><a href="../windows-server.html">Windows Server</a></li>
+                        <li><a href="../networking.html">Networking</a></li>
+                        <li><a href="../cybersecurity-101.html">Cybersecurity</a></li>
+                        <li><a href="../penetration-testing.html">Penetration Testing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Stay Updated</h4>
+                    <p>Follow along as I document new learnings and lab experiences.</p>
+                    <div class="social-links">
+                        <a href="https://github.com/manognya66" target="_blank"><i class="fab fa-github"></i></a>
+                        <a href="https://www.linkedin.com/in/r-shashank-manognya-070874255" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ThreatLens. All rights reserved.</p>
+                <button class="back-to-top" id="backToTop"><i class="fas fa-chevron-up"></i></button>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="../js/script.js"></script>
+    <script src="../js/post-script.js"></script>
+</body>
+</html>

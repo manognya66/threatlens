@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPv6 OSPF (OSPFv3) | ThreatLens</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/post-styles.css">
+    <link rel="shortcut icon" href="../logos/logo.svg" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <div class="nav-brand">
+                <img src="../logos/logo.svg" alt="ThreatLens Logo" style="width: 35px; height: 35px;">
+                <span>ThreatLens</span>
+            </div>
+            <button class="nav-toggle" id="navToggle">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="../index.html#learning-paths" class="nav-link">Learning Paths</a></li>
+                <li><a href="../all-posts.html" class="nav-link active">All Posts</a></li>
+                <li><a href="../index.html#about" class="nav-link">About</a></li>
+            </ul>
+            <div class="nav-search" onclick="window.location.href='../all-posts.html'" style="cursor: pointer;">
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
+    </nav>
+
+    <article class="post-article">
+        <div class="post-header">
+            <div class="container">
+                <div class="breadcrumb">
+                    <a href="../index.html"><i class="fas fa-home"></i> Home</a>
+                    <span>/</span>
+                    <a href="../networking.html">Networking</a>
+                    <span>/</span>
+                    <span>IPv6 OSPF (OSPFv3)</span>
+                </div>
+                <div class="post-category-badge" style="background: rgba(27,160,215,0.15); color: var(--networkingcolor); border: 1px solid rgba(27,160,215,0.3);">Networking</div>
+                <h1 class="post-main-title">IPv6 OSPF — OSPFv3 Configuration</h1>
+                <div class="post-meta-info">
+                    <div class="meta-item"><i class="fas fa-calendar"></i><span>March 13, 2026</span></div>
+                    <div class="meta-item"><i class="fas fa-clock"></i><span>7 min read</span></div>
+                </div>
+                <div class="post-tags-header">
+                    <span class="tag">IPv6</span>
+                    <span class="tag">OSPF</span>
+                    <span class="tag">OSPFv3</span>
+                    <span class="tag">Cisco IOS</span>
+                    <span class="tag">Dynamic Routing</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="post-body">
+            <div class="container post-container">
+                <aside class="post-sidebar">
+                    <div class="toc-wrapper">
+                        <h3 class="toc-title">Table of Contents</h3>
+                        <nav class="toc">
+                            <ul>
+                                <li><a href="#what-i-learned" class="toc-link active">What I Learned</a></li>
+                                <li><a href="#ospf-vs-ospfv3" class="toc-link">OSPF vs OSPFv3</a></li>
+                                <li><a href="#multicast-addresses" class="toc-link">Multicast Addresses</a></li>
+                                <li><a href="#configuration" class="toc-link">Configuration</a></li>
+                                <li><a href="#verification" class="toc-link">Verification</a></li>
+                                <li><a href="#key-takeaways" class="toc-link">Key Takeaways</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="share-section">
+                        <h4>Share This Post</h4>
+                        <div class="share-buttons">
+                            <a href="#" class="share-btn linkedin"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="share-btn reddit"><i class="fab fa-reddit"></i></a>
+                            <a href="#" class="share-btn link"><i class="fas fa-link"></i></a>
+                        </div>
+                    </div>
+                </aside>
+
+                <div class="post-content-main">
+
+                    <section id="what-i-learned">
+                        <h2>What I Learned</h2>
+                        <p>OSPFv3 is the IPv6 version of OSPF. The core concept is the same as OSPFv4 — link-state routing, areas, DR/BDR election — but the configuration approach is completely different. Instead of enabling OSPF per network using the <code class="inline-code">network</code> command, OSPFv3 is enabled directly on each interface.</p>
+                        <p>The other key difference: OSPFv3 uses a <strong>Router ID</strong> in 32-bit IPv4 dotted-decimal format even in a pure IPv6 environment. Since there are no IPv4 addresses, you must set it manually. That's the part that tripped me up the first time.</p>
+                    </section>
+
+                    <section id="ospf-vs-ospfv3">
+                        <h2>OSPF vs OSPFv3</h2>
+                        <p>OSPFv3 is defined in RFC 5340. While it uses the same fundamental OSPF algorithm, several key parameters changed for IPv6:</p>
+
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Feature</th>
+                                        <th>OSPF (IPv4)</th>
+                                        <th>OSPFv3 (IPv6)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Protocol version</td>
+                                        <td>OSPFv2</td>
+                                        <td>OSPFv3</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Multicast — All OSPF routers</td>
+                                        <td><code class="inline-code">224.0.0.5</code></td>
+                                        <td><code class="inline-code">FF02::5</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Multicast — DR/BDR routers</td>
+                                        <td><code class="inline-code">224.0.0.6</code></td>
+                                        <td><code class="inline-code">FF02::6</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Router ID format</td>
+                                        <td>Derived from IPv4 address</td>
+                                        <td>Must be set manually (32-bit IPv4 format)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>OSPF enabled per</td>
+                                        <td>Network (<code class="inline-code">network</code> command)</td>
+                                        <td>Interface (<code class="inline-code">ipv6 ospf area</code> command)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Authentication</td>
+                                        <td>MD5 / plain text</td>
+                                        <td>IPSec (native to IPv6)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="callout callout-warning">
+                            <div class="callout-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                            <div class="callout-content">
+                                <strong>Router ID is mandatory in OSPFv3.</strong> In a pure IPv6 environment, there are no IPv4 addresses for the router to derive a Router ID from. You must configure it manually using <code class="inline-code">router-id</code> — otherwise OSPFv3 will not start.
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="multicast-addresses">
+                        <h2>Multicast Addresses</h2>
+                        <p>OSPFv3 uses IPv6 link-local multicast addresses for hello packets and LSA flooding. These replace the IPv4 multicast addresses used in OSPFv2.</p>
+
+                        <div class="audit-categories">
+                            <div class="audit-category">
+                                <h4><i class="fas fa-broadcast-tower"></i> FF02::5</h4>
+                                <p>All OSPF Routers — equivalent to <code class="inline-code">224.0.0.5</code> in IPv4. Every OSPFv3-enabled router listens on this address.</p>
+                                <span class="audit-setting">All OSPF Speakers</span>
+                            </div>
+                            <div class="audit-category">
+                                <h4><i class="fas fa-crown"></i> FF02::6</h4>
+                                <p>All Designated Routers — equivalent to <code class="inline-code">224.0.0.6</code> in IPv4. Used for communication with DR and BDR only.</p>
+                                <span class="audit-setting">DR / BDR Only</span>
+                            </div>
+                        </div>
+
+                        <div class="callout callout-info">
+                            <div class="callout-icon"><i class="fas fa-info-circle"></i></div>
+                            <div class="callout-content">
+                                OSPFv3 uses <strong>link-local addresses</strong> as the source address for all OSPF packets, not the global unicast address. This means adjacencies are formed using <code class="inline-code">FE80::/10</code> addresses, which are auto-generated on every interface.
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="configuration">
+                        <h2>Configuration</h2>
+                        <p>The lab uses two routers (RA and RB) connected via a serial link, each with a FastEthernet LAN interface. The same commands apply to both routers — only the Router ID and interface addresses differ.</p>
+
+                        <h3>Lab Topology</h3>
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr><th>Device</th><th>Interface</th><th>IPv6 Address</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Router A</td><td>Fa0</td><td><code class="inline-code">2001:1::1/64</code></td></tr>
+                                    <tr><td>Router A</td><td>S0</td><td><code class="inline-code">2001:2::1/64</code></td></tr>
+                                    <tr><td>Router B</td><td>S0</td><td><code class="inline-code">2001:2::2/64</code></td></tr>
+                                    <tr><td>Router B</td><td>Fa0</td><td><code class="inline-code">2001:3::1/64</code></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3>RA & RB — OSPFv3 Configuration</h3>
+                        <p>The same command sequence is applied on both routers. Only the Router ID and interface IPv6 addresses differ.</p>
+
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">Cisco IOS — RA & RB</span>
+                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code class="language-bash">enable
+config t
+
+! Step 1 — Enable IPv6 routing (required before any IPv6 routing protocol)
+ipv6 unicast-routing
+
+! Step 2 — Create OSPF process and set Router ID
+!          Router ID must be set manually in pure IPv6 environments
+ipv6 router ospf 10
+ router-id 10.10.10.10
+exit
+
+! Step 3 — Enable OSPFv3 on FastEthernet interface
+interface fa0
+ ipv6 ospf 10 area 0
+exit
+
+! Step 4 — Enable OSPFv3 on Serial interface
+interface s0
+ ipv6 ospf 10 area 0
+exit</code></pre>
+                        </div>
+
+                        <div class="callout callout-warning">
+                            <div class="callout-icon"><i class="fas fa-exclamation-circle"></i></div>
+                            <div class="callout-content">
+                                <strong>Key difference from OSPFv2:</strong> There is no <code class="inline-code">network</code> command in OSPFv3. OSPF is enabled directly on the interface with <code class="inline-code">ipv6 ospf [process-id] area [area-id]</code>. Each interface that should participate in OSPF must have this command.
+                            </div>
+                        </div>
+
+                        <h3>OSPFv3 vs RIPng — Command Comparison</h3>
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr><th>Task</th><th>RIPng</th><th>OSPFv3</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Enable routing</td>
+                                        <td><code class="inline-code">ipv6 unicast-routing</code></td>
+                                        <td><code class="inline-code">ipv6 unicast-routing</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Create process</td>
+                                        <td><code class="inline-code">ipv6 router rip [name]</code></td>
+                                        <td><code class="inline-code">ipv6 router ospf [pid]</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Router ID</td>
+                                        <td>Not required</td>
+                                        <td><code class="inline-code">router-id x.x.x.x</code> (mandatory)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Enable on interface</td>
+                                        <td><code class="inline-code">ipv6 rip [name] enable</code></td>
+                                        <td><code class="inline-code">ipv6 ospf [pid] area [id]</code></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section id="verification">
+                        <h2>Verification</h2>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">Cisco IOS — Verification Commands</span>
+                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code class="language-bash">! View IPv6 routing table — look for 'O' entries (OSPF learned routes)
+show ipv6 route
+
+! View OSPF neighbor adjacencies — confirm DR/BDR relationships
+show ipv6 ospf neighbors
+
+! View OSPF link-state database
+show ipv6 ospf database</code></pre>
+                        </div>
+
+                        <div class="callout callout-success">
+                            <div class="callout-icon"><i class="fas fa-vial"></i></div>
+                            <div class="callout-content">
+                                <strong>What to look for:</strong>
+                                <ul style="margin: 0.5rem 0 0 0;">
+                                    <li><code class="inline-code">show ipv6 route</code> — remote networks should appear with prefix <strong>O</strong> (OSPF)</li>
+                                    <li><code class="inline-code">show ipv6 ospf neighbors</code> — neighbor state should be <strong>FULL</strong></li>
+                                    <li><code class="inline-code">show ipv6 ospf database</code> — LSAs from both routers should appear</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="key-takeaways">
+                        <h2>Key Takeaways</h2>
+                        <div class="feature-box">
+                            <h4><i class="fas fa-key"></i> What I Understood</h4>
+                            <ul>
+                                <li>OSPFv3 is the IPv6 version of OSPF — same algorithm, different configuration syntax</li>
+                                <li>OSPF is enabled <strong>per interface</strong> in OSPFv3, not per network</li>
+                                <li>The <strong>Router ID must be set manually</strong> in a pure IPv6 environment — OSPFv3 will not start without it</li>
+                                <li>OSPFv3 uses <code class="inline-code">FF02::5</code> (all OSPF routers) and <code class="inline-code">FF02::6</code> (DR/BDR) as multicast addresses</li>
+                                <li>Adjacencies are formed using <strong>link-local addresses</strong> (<code class="inline-code">FE80::/10</code>), not global unicast addresses</li>
+                                <li><code class="inline-code">ipv6 unicast-routing</code> must be enabled before OSPFv3 can run</li>
+                                <li>Authentication in OSPFv3 uses IPSec — it is native to IPv6</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <!-- Related Posts -->
+                    <div class="related-posts">
+                        <h3>Related Posts</h3>
+                        <div class="related-grid">
+                            <a href="./ipv6-eigrp.html" class="related-card">
+                                <div class="related-category networking">Networking</div>
+                                <h4>IPv6 EIGRP Configuration</h4>
+                                <p>Configuring EIGRPv6 on Cisco IOS — comparing with IPv4 EIGRP and enabling per-interface...</p>
+                            </a>
+                            <a href="./ipv6.html" class="related-card">
+                                <div class="related-category networking">Networking</div>
+                                <h4>IPv6 — The Next Generation Protocol</h4>
+                                <p>Address types, notation rules, static routing, and migration tools from IPv4 to IPv6...</p>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h4>About</h4>
+                    <p>Documenting my journey through network security and system administration.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="../all-posts.html">All Posts</a></li>
+                        <li><a href="../index.html#about">About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Categories</h4>
+                    <ul>
+                        <li><a href="../windows-server.html">Windows Server</a></li>
+                        <li><a href="../networking.html">Networking</a></li>
+                        <li><a href="../cybersecurity-101.html">Cybersecurity</a></li>
+                        <li><a href="../penetration-testing.html">Penetration Testing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Stay Updated</h4>
+                    <p>Follow along as I document new learnings and lab experiences.</p>
+                    <div class="social-links">
+                        <a href="https://github.com/manognya66" target="_blank"><i class="fab fa-github"></i></a>
+                        <a href="https://www.linkedin.com/in/r-shashank-manognya-070874255" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ThreatLens. All rights reserved.</p>
+                <button class="back-to-top" id="backToTop"><i class="fas fa-chevron-up"></i></button>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="../js/script.js"></script>
+    <script src="../js/post-script.js"></script>
+</body>
+</html>

@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPv6 EIGRP (EIGRPv6) | ThreatLens</title>
+    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="../css/post-styles.css">
+    <link rel="shortcut icon" href="../logos/logo.svg" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-container">
+            <div class="nav-brand">
+                <img src="../logos/logo.svg" alt="ThreatLens Logo" style="width: 35px; height: 35px;">
+                <span>ThreatLens</span>
+            </div>
+            <button class="nav-toggle" id="navToggle">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="../index.html#learning-paths" class="nav-link">Learning Paths</a></li>
+                <li><a href="../all-posts.html" class="nav-link active">All Posts</a></li>
+                <li><a href="../index.html#about" class="nav-link">About</a></li>
+            </ul>
+            <div class="nav-search" onclick="window.location.href='../all-posts.html'" style="cursor: pointer;">
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
+    </nav>
+
+    <article class="post-article">
+        <div class="post-header">
+            <div class="container">
+                <div class="breadcrumb">
+                    <a href="../index.html"><i class="fas fa-home"></i> Home</a>
+                    <span>/</span>
+                    <a href="../networking.html">Networking</a>
+                    <span>/</span>
+                    <span>IPv6 EIGRP (EIGRPv6)</span>
+                </div>
+                <div class="post-category-badge" style="background: rgba(27,160,215,0.15); color: var(--networkingcolor); border: 1px solid rgba(27,160,215,0.3);">Networking</div>
+                <h1 class="post-main-title">IPv6 EIGRP — EIGRPv6 Configuration</h1>
+                <div class="post-meta-info">
+                    <div class="meta-item"><i class="fas fa-calendar"></i><span>March 13, 2026</span></div>
+                    <div class="meta-item"><i class="fas fa-clock"></i><span>7 min read</span></div>
+                </div>
+                <div class="post-tags-header">
+                    <span class="tag">IPv6</span>
+                    <span class="tag">EIGRP</span>
+                    <span class="tag">EIGRPv6</span>
+                    <span class="tag">Cisco IOS</span>
+                    <span class="tag">Dynamic Routing</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="post-body">
+            <div class="container post-container">
+                <aside class="post-sidebar">
+                    <div class="toc-wrapper">
+                        <h3 class="toc-title">Table of Contents</h3>
+                        <nav class="toc">
+                            <ul>
+                                <li><a href="#what-i-learned" class="toc-link active">What I Learned</a></li>
+                                <li><a href="#eigrp-vs-eigrpv6" class="toc-link">EIGRP vs EIGRPv6</a></li>
+                                <li><a href="#multicast-address" class="toc-link">Multicast Address</a></li>
+                                <li><a href="#configuration" class="toc-link">Configuration</a></li>
+                                <li><a href="#verification" class="toc-link">Verification</a></li>
+                                <li><a href="#routing-protocols-compared" class="toc-link">All IPv6 Protocols</a></li>
+                                <li><a href="#key-takeaways" class="toc-link">Key Takeaways</a></li>
+                            </ul>
+                        </nav>
+                    </div>
+                    <div class="share-section">
+                        <h4>Share This Post</h4>
+                        <div class="share-buttons">
+                            <a href="#" class="share-btn linkedin"><i class="fab fa-linkedin"></i></a>
+                            <a href="#" class="share-btn reddit"><i class="fab fa-reddit"></i></a>
+                            <a href="#" class="share-btn link"><i class="fas fa-link"></i></a>
+                        </div>
+                    </div>
+                </aside>
+
+                <div class="post-content-main">
+
+                    <section id="what-i-learned">
+                        <h2>What I Learned</h2>
+                        <p>EIGRPv6 is the IPv6 version of EIGRP. It uses the same DUAL algorithm, same composite metric (bandwidth + delay), and the same successor/feasible successor logic — but the configuration is interface-based, not network-based.</p>
+                        <p>The biggest difference from EIGRPv4: <strong>auto-summary is not available</strong> in EIGRPv6. IPv6 uses classless addressing by design, so summarization must always be done manually. Also — like OSPFv3 — EIGRPv6 requires a manually configured Router ID in a pure IPv6 environment.</p>
+
+                        <div class="callout callout-info">
+                            <div class="callout-icon"><i class="fas fa-lightbulb"></i></div>
+                            <div class="callout-content">
+                                EIGRPv6 shares the same protocol number (<strong>88</strong>) as EIGRPv4. The protocol header is identical — only the addressing is different.
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="eigrp-vs-eigrpv6">
+                        <h2>EIGRP vs EIGRPv6</h2>
+                        <p>EIGRPv6 keeps the core EIGRP engine but updates addressing and removes features that don't apply in IPv6.</p>
+
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Feature</th>
+                                        <th>EIGRP (IPv4)</th>
+                                        <th>EIGRPv6 (IPv6)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Protocol Header</td>
+                                        <td><strong>88</strong></td>
+                                        <td><strong>88</strong> (same)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Auto-Summary</td>
+                                        <td>Possible</td>
+                                        <td><strong>Unavailable</strong></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Multicast Address</td>
+                                        <td><code class="inline-code">224.0.0.10</code></td>
+                                        <td><code class="inline-code">FF02::10</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Router ID</td>
+                                        <td>Derived from IPv4 address</td>
+                                        <td>Must be set manually (32-bit IPv4 format)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Enabled per</td>
+                                        <td>Network (<code class="inline-code">network</code> command)</td>
+                                        <td>Interface (<code class="inline-code">ipv6 eigrp [asn]</code> command)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Algorithm</td>
+                                        <td>DUAL</td>
+                                        <td>DUAL (same)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Metric components</td>
+                                        <td>Bandwidth, Delay, Reliability, Load, MTU</td>
+                                        <td>Same</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="callout callout-warning">
+                            <div class="callout-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                            <div class="callout-content">
+                                <strong>Auto-Summary removed:</strong> IPv6 has no concept of classful networks, so auto-summarization was removed from EIGRPv6. All summarization must be done manually with <code class="inline-code">ipv6 summary-address eigrp</code> on the interface if needed.
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="multicast-address">
+                        <h2>Multicast Address</h2>
+                        <p>EIGRPv6 uses a dedicated IPv6 multicast address for sending hello packets and routing updates between EIGRP neighbors.</p>
+
+                        <div class="audit-categories">
+                            <div class="audit-category" style="grid-column: span 2;">
+                                <h4><i class="fas fa-broadcast-tower"></i> FF02::10 — All EIGRP Routers</h4>
+                                <p>This is the IPv6 equivalent of <code class="inline-code">224.0.0.10</code> used in EIGRPv4. All EIGRPv6-enabled routers join this multicast group and listen for EIGRP hello and update packets on their interfaces.</p>
+                                <span class="audit-setting">Link-local multicast scope</span>
+                            </div>
+                        </div>
+
+                        <div class="callout callout-info">
+                            <div class="callout-icon"><i class="fas fa-info-circle"></i></div>
+                            <div class="callout-content">
+                                Like OSPFv3, EIGRPv6 uses <strong>link-local addresses</strong> (<code class="inline-code">FE80::/10</code>) as the source address for all EIGRP packets. Neighbor relationships are established using link-local addresses, not global unicast addresses.
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="configuration">
+                        <h2>Configuration</h2>
+                        <p>The same command sequence applies to both RA and RB. Only the Router ID and interface addresses differ between routers.</p>
+
+                        <h3>Lab Topology</h3>
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr><th>Device</th><th>Interface</th><th>IPv6 Address</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Router A</td><td>Fa0</td><td><code class="inline-code">2001:1::1/64</code></td></tr>
+                                    <tr><td>Router A</td><td>S0</td><td><code class="inline-code">2001:2::1/64</code></td></tr>
+                                    <tr><td>Router B</td><td>S0</td><td><code class="inline-code">2001:2::2/64</code></td></tr>
+                                    <tr><td>Router B</td><td>Fa0</td><td><code class="inline-code">2001:3::1/64</code></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3>RA & RB — EIGRPv6 Configuration</h3>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">Cisco IOS — RA & RB</span>
+                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code class="language-bash">enable
+config t
+
+! Step 1 — Enable IPv6 routing (mandatory before any IPv6 routing protocol)
+ipv6 unicast-routing
+
+! Step 2 — Create EIGRP process and bring it up
+!          'no shutdown' is required — EIGRPv6 process starts in shutdown state
+ipv6 router eigrp 10
+ no shutdown
+ router-id 10.10.10.10
+exit
+
+! Step 3 — Enable EIGRPv6 on FastEthernet interface
+interface fa0
+ ipv6 eigrp 10
+exit
+
+! Step 4 — Enable EIGRPv6 on Serial interface
+interface s0
+ ipv6 eigrp 10
+exit</code></pre>
+                        </div>
+
+                        <div class="callout callout-warning">
+                            <div class="callout-icon"><i class="fas fa-exclamation-circle"></i></div>
+                            <div class="callout-content">
+                                <strong>Two things that catch people out with EIGRPv6:</strong>
+                                <ul style="margin: 0.5rem 0 0 0;">
+                                    <li>The EIGRP process starts in <strong>shutdown state</strong> by default — you must run <code class="inline-code">no shutdown</code> inside the EIGRP process</li>
+                                    <li>The <strong>Router ID must be set manually</strong> — without a 32-bit Router ID, EIGRPv6 will not form neighbor adjacencies</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <h3>Side-by-Side: EIGRPv4 vs EIGRPv6 Commands</h3>
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr><th>Task</th><th>EIGRPv4 (IPv4)</th><th>EIGRPv6 (IPv6)</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Enable routing</td>
+                                        <td>—</td>
+                                        <td><code class="inline-code">ipv6 unicast-routing</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Create process</td>
+                                        <td><code class="inline-code">router eigrp 10</code></td>
+                                        <td><code class="inline-code">ipv6 router eigrp 10</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Start process</td>
+                                        <td>Auto-started</td>
+                                        <td><code class="inline-code">no shutdown</code> (required)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Router ID</td>
+                                        <td>Auto (from IPv4 address)</td>
+                                        <td><code class="inline-code">router-id 10.10.10.10</code> (required)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Advertise network</td>
+                                        <td><code class="inline-code">network x.x.x.x</code></td>
+                                        <td><code class="inline-code">ipv6 eigrp 10</code> on the interface</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Auto-summary</td>
+                                        <td><code class="inline-code">no auto-summary</code></td>
+                                        <td>Unavailable (removed)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section id="verification">
+                        <h2>Verification</h2>
+                        <div class="code-block">
+                            <div class="code-header">
+                                <span class="code-language">Cisco IOS — Verification Commands</span>
+                                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                            </div>
+                            <pre><code class="language-bash">! View IPv6 routing table — look for 'D' entries (EIGRP learned routes)
+show ipv6 route
+
+! View EIGRP neighbor table — confirm neighbor adjacencies via link-local addresses
+show ipv6 eigrp neighbors
+
+! View EIGRP topology table — see successors and feasible successors
+show ipv6 eigrp topology</code></pre>
+                        </div>
+
+                        <div class="callout callout-success">
+                            <div class="callout-icon"><i class="fas fa-vial"></i></div>
+                            <div class="callout-content">
+                                <strong>What to look for:</strong>
+                                <ul style="margin: 0.5rem 0 0 0;">
+                                    <li><code class="inline-code">show ipv6 route</code> — remote networks should appear with prefix <strong>D</strong> (EIGRP)</li>
+                                    <li><code class="inline-code">show ipv6 eigrp neighbors</code> — neighbors listed with their link-local address (<code class="inline-code">FE80::...</code>)</li>
+                                    <li><code class="inline-code">show ipv6 eigrp topology</code> — each destination shows Successor (best path) and Feasible Successor (backup path)</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="routing-protocols-compared">
+                        <h2>All IPv6 Routing Protocols — Quick Reference</h2>
+                        <p>Here's how all three IPv6 dynamic routing protocols compare side by side:</p>
+
+                        <div class="settings-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Feature</th>
+                                        <th>RIPng</th>
+                                        <th>OSPFv3</th>
+                                        <th>EIGRPv6</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Type</td>
+                                        <td>Distance Vector</td>
+                                        <td>Link State</td>
+                                        <td>Hybrid (DUAL)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>UDP/Protocol</td>
+                                        <td>UDP 521</td>
+                                        <td>Protocol 89</td>
+                                        <td>Protocol 88</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Multicast</td>
+                                        <td><code class="inline-code">FF02::9</code></td>
+                                        <td><code class="inline-code">FF02::5 / FF02::6</code></td>
+                                        <td><code class="inline-code">FF02::10</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Router ID</td>
+                                        <td>Not required</td>
+                                        <td>Required (manual)</td>
+                                        <td>Required (manual)</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Auto-Summary</td>
+                                        <td>Unavailable</td>
+                                        <td>Unavailable</td>
+                                        <td>Unavailable</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Enabled per</td>
+                                        <td>Interface</td>
+                                        <td>Interface</td>
+                                        <td>Interface</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Process startup</td>
+                                        <td>Auto</td>
+                                        <td>Auto</td>
+                                        <td>Requires <code class="inline-code">no shutdown</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Metric</td>
+                                        <td>Hop count (max 15)</td>
+                                        <td>Cost (bandwidth)</td>
+                                        <td>Composite (BW + Delay)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+
+                    <section id="key-takeaways">
+                        <h2>Key Takeaways</h2>
+                        <div class="feature-box">
+                            <h4><i class="fas fa-key"></i> What I Understood</h4>
+                            <ul>
+                                <li>EIGRPv6 uses the same protocol number (<strong>88</strong>) and DUAL algorithm as EIGRPv4</li>
+                                <li>EIGRP is enabled <strong>per interface</strong> in EIGRPv6 — there is no <code class="inline-code">network</code> command</li>
+                                <li>The EIGRP process starts in <strong>shutdown state</strong> — always run <code class="inline-code">no shutdown</code> inside the process</li>
+                                <li>The <strong>Router ID must be set manually</strong> in a pure IPv6 environment</li>
+                                <li><strong>Auto-summary is gone</strong> — IPv6 is classless by design; all summarization is manual</li>
+                                <li>EIGRPv6 uses <code class="inline-code">FF02::10</code> as its multicast address (IPv4 equivalent: <code class="inline-code">224.0.0.10</code>)</li>
+                                <li>Neighbor adjacencies use <strong>link-local addresses</strong> — verify with <code class="inline-code">show ipv6 eigrp neighbors</code></li>
+                                <li>Routes learned via EIGRPv6 appear as <strong>D</strong> in the IPv6 routing table</li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <!-- Related Posts -->
+                    <div class="related-posts">
+                        <h3>Related Posts</h3>
+                        <div class="related-grid">
+                            <a href="./ipv6-ospf.html" class="related-card">
+                                <div class="related-category networking">Networking</div>
+                                <h4>IPv6 OSPF (OSPFv3) Configuration</h4>
+                                <p>Configuring OSPFv3 on Cisco IOS — multicast addresses, Router ID, and interface-based enablement...</p>
+                            </a>
+                            <a href="./ipv6.html" class="related-card">
+                                <div class="related-category networking">Networking</div>
+                                <h4>IPv6 — The Next Generation Protocol</h4>
+                                <p>Address types, notation rules, static routing, and migration tools from IPv4 to IPv6...</p>
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </article>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h4>About</h4>
+                    <p>Documenting my journey through network security and system administration.</p>
+                </div>
+                <div class="footer-column">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="../index.html">Home</a></li>
+                        <li><a href="../all-posts.html">All Posts</a></li>
+                        <li><a href="../index.html#about">About</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Categories</h4>
+                    <ul>
+                        <li><a href="../windows-server.html">Windows Server</a></li>
+                        <li><a href="../networking.html">Networking</a></li>
+                        <li><a href="../cybersecurity-101.html">Cybersecurity</a></li>
+                        <li><a href="../penetration-testing.html">Penetration Testing</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Stay Updated</h4>
+                    <p>Follow along as I document new learnings and lab experiences.</p>
+                    <div class="social-links">
+                        <a href="https://github.com/manognya66" target="_blank"><i class="fab fa-github"></i></a>
+                        <a href="https://www.linkedin.com/in/r-shashank-manognya-070874255" target="_blank"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 ThreatLens. All rights reserved.</p>
+                <button class="back-to-top" id="backToTop"><i class="fas fa-chevron-up"></i></button>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script src="../js/script.js"></script>
+    <script src="../js/post-script.js"></script>
+</body>
+</html>

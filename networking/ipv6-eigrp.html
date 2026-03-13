@@ -70,6 +70,7 @@
                                 <li><a href="#what-i-learned" class="toc-link active">What I Learned</a></li>
                                 <li><a href="#eigrp-vs-eigrpv6" class="toc-link">EIGRP vs EIGRPv6</a></li>
                                 <li><a href="#multicast-address" class="toc-link">Multicast Address</a></li>
+                                <li><a href="#my-topology" class="toc-link">My Lab Topology</a></li>
                                 <li><a href="#configuration" class="toc-link">Configuration</a></li>
                                 <li><a href="#verification" class="toc-link">Verification</a></li>
                                 <li><a href="#routing-protocols-compared" class="toc-link">All IPv6 Protocols</a></li>
@@ -183,12 +184,13 @@
                         </div>
                     </section>
 
-                    <section id="configuration">
-                        <h2>Configuration</h2>
-                        <p>The same command sequence applies to both RA and RB. Only the Router ID and interface addresses differ between routers.</p>
+                    <section id="my-topology">
+                        <h2>My Lab Topology</h2>
+                        <p>The lab uses two routers (RA and RB) connected via a serial link, each with a FastEthernet LAN interface. The same commands apply to both routers — only the Router ID and interface addresses differ.</p>
 
-                        <h3>Lab Topology</h3>
-                        <div class="settings-table">
+                        <img src="./IPv6/ipv6_eigrp.png" alt="IPv6 EIGRP Lab Topology" style="height: auto; width: 100%;">
+
+                        <div class="settings-table" style="margin-top: 1.5rem;">
                             <table>
                                 <thead>
                                     <tr><th>Device</th><th>Interface</th><th>IPv6 Address</th></tr>
@@ -201,6 +203,20 @@
                                 </tbody>
                             </table>
                         </div>
+
+                        <div class="callout callout-success" style="margin-top: 1.5rem;">
+                            <div class="callout-icon"><i class="fas fa-download"></i></div>
+                            <div class="callout-content">
+                                <p style="margin-bottom: 0.5rem;"><strong>Download my Packet Tracer lab:</strong></p>
+                                <a href="https://raw.githubusercontent.com/manognya66/threatlens/main/networking/IPv6/ipv6_eigrp.pkt" class="btn btn-primary" download>
+                                    <i class="fas fa-download"></i> Download Lab File
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="configuration">
+                        <h2>Configuration</h2>
 
                         <h3>RA & RB — EIGRPv6 Configuration</h3>
                         <div class="code-block">
